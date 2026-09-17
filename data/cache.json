@@ -1,5 +1,5 @@
 {
- "_note": "Seed cache captured 2026-09-17 from FRED (via econstats MCP) and Treasury Fiscal Data API. fetch_data.py overwrites these when the live pulls succeed.",
+ "_note": "Raw observations refreshed by fetch_data.py. Failed pulls keep the previous cached values; build.py reports staleness.",
  "GASREGW": [
   {
    "date": "2015-01-05",
@@ -2129,6 +2129,72 @@
   }
  ],
  "MTS_CUSTOMS": [
+  {
+   "date": "2023-10-31",
+   "gross": 7309242734.38,
+   "refunds": 406505245.69,
+   "net": 6902737488.69
+  },
+  {
+   "date": "2023-11-30",
+   "gross": 6700010481.8,
+   "refunds": 403804287.41,
+   "net": 6296206194.39
+  },
+  {
+   "date": "2023-12-31",
+   "gross": 6394507574.14,
+   "refunds": 650054719.16,
+   "net": 5744452854.98
+  },
+  {
+   "date": "2024-01-31",
+   "gross": 6987471629.25,
+   "refunds": 510845653.13,
+   "net": 6476625976.12
+  },
+  {
+   "date": "2024-02-29",
+   "gross": 6751690073.97,
+   "refunds": 543301843.42,
+   "net": 6208388230.55
+  },
+  {
+   "date": "2024-03-31",
+   "gross": 6642735067.17,
+   "refunds": 578450173.51,
+   "net": 6064284893.66
+  },
+  {
+   "date": "2024-04-30",
+   "gross": 7089658776.07,
+   "refunds": 723150048.3,
+   "net": 6366508727.77
+  },
+  {
+   "date": "2024-05-31",
+   "gross": 6160874241.63,
+   "refunds": 936212539.78,
+   "net": 5224661701.85
+  },
+  {
+   "date": "2024-06-30",
+   "gross": 6763355733.01,
+   "refunds": 440011064.15,
+   "net": 6323344668.86
+  },
+  {
+   "date": "2024-07-31",
+   "gross": 7627631206.61,
+   "refunds": 494143015.9,
+   "net": 7133488190.71
+  },
+  {
+   "date": "2024-08-31",
+   "gross": 7615291682.62,
+   "refunds": 568340133.66,
+   "net": 7046951548.96
+  },
   {
    "date": "2024-09-30",
    "gross": 7729376271.49,
