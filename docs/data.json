@@ -1,5 +1,5 @@
 {
- "built_at": "2026-09-17T15:15:40",
+ "built_at": "2026-09-17T07:20:54",
  "as_of": "2026-09-17",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
@@ -486,6 +486,42 @@
    "real_yoy": -0.8
   },
   "path": [
+   {
+    "month": "2025-01",
+    "nominal_yoy": 3.97,
+    "cpi_yoy": 2.99,
+    "real_yoy": 0.95
+   },
+   {
+    "month": "2025-02",
+    "nominal_yoy": 4.11,
+    "cpi_yoy": 2.8,
+    "real_yoy": 1.28
+   },
+   {
+    "month": "2025-03",
+    "nominal_yoy": 4.21,
+    "cpi_yoy": 2.38,
+    "real_yoy": 1.79
+   },
+   {
+    "month": "2025-04",
+    "nominal_yoy": 3.91,
+    "cpi_yoy": 2.33,
+    "real_yoy": 1.55
+   },
+   {
+    "month": "2025-05",
+    "nominal_yoy": 3.98,
+    "cpi_yoy": 2.38,
+    "real_yoy": 1.57
+   },
+   {
+    "month": "2025-06",
+    "nominal_yoy": 3.86,
+    "cpi_yoy": 2.68,
+    "real_yoy": 1.14
+   },
    {
     "month": "2025-07",
     "nominal_yoy": 3.96,
