@@ -4,13 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The Refund Ledger</title>
-<meta name="description" content="Live tally: the 2026 tax refund boost against what households are paying extra for gasoline, tariffs, and higher mortgage rates.">
+<meta name="description" content="Live tally: the 2026 tax refund boost against what households have paid extra, in total since January 2025, for fuel, tariffs, and higher debt service.">
 <style>
   :root {
     color-scheme: light;
     --bg: #fcfcfb; --surface: #ffffff; --line: #e4e3df; --grid: #eeede9;
     --ink: #0b0b0b; --ink-2: #52514e; --ink-3: #7a7975;
-    --tariff: #2a78d6; --gas: #eb6834; --refund: #1baf7a; --mortgage: #4a3aa7;
+    --tariff: #2a78d6; --fuel: #eb6834; --refund: #1baf7a; --debt: #4a3aa7;
     --neg: #d03b3b;
   }
   @media (prefers-color-scheme: dark) {
@@ -18,7 +18,7 @@
       color-scheme: dark;
       --bg: #141413; --surface: #1a1a19; --line: #33322f; --grid: #262523;
       --ink: #f4f3ef; --ink-2: #c3c2b7; --ink-3: #8f8e88;
-      --tariff: #3987e5; --gas: #d95926; --refund: #199e70; --mortgage: #9085e9;
+      --tariff: #3987e5; --fuel: #d95926; --refund: #199e70; --debt: #9085e9;
       --neg: #e66767;
     }
   }
@@ -31,7 +31,6 @@
   h3 { font-size: 1rem; margin: 18px 0 6px; }
   p { margin: 8px 0; }
   .sub { color: var(--ink-2); margin: 0 0 24px; }
-  .tabnum { font-variant-numeric: tabular-nums; }
   .ledger { border-top: 2px solid var(--ink); border-bottom: 2px solid var(--ink); margin: 20px 0 8px; }
   .row { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: baseline;
          padding: 12px 0; border-bottom: 1px solid var(--line); }
@@ -51,7 +50,7 @@
   .legend span::before { content: ""; display: inline-block; width: 12px; height: 3px; border-radius: 2px; margin-right: 6px; vertical-align: middle; background: var(--c); }
   .tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--line);
          border-radius: 6px; padding: 8px 10px; font-size: 0.85rem; box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-         display: none; min-width: 190px; }
+         display: none; min-width: 200px; }
   .tip b { font-variant-numeric: tabular-nums; }
   .tip div { display: flex; justify-content: space-between; gap: 14px; }
   table { border-collapse: collapse; width: 100%; font-size: 0.92rem; margin: 10px 0; }
@@ -67,6 +66,7 @@
   .small { font-size: 0.85rem; color: var(--ink-3); }
   a { color: inherit; }
   .fresh { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px 16px; font-size: 0.85rem; color: var(--ink-2); }
+  ol.caveats li { margin: 6px 0; }
   @media (max-width: 480px) {
     h1 { font-size: 1.5rem; }
     .row .amt { font-size: 1.25rem; }
@@ -76,38 +76,41 @@
 </head>
 <body>
 <main>
-  <h1>Did the bigger tax refund cover higher gas, tariffs, and mortgage rates?</h1>
-  <p class="sub">Per U.S. household, calendar 2026. Updated daily from EIA, Treasury, Freddie Mac, BLS, IRS, Yale Budget Lab, Brown University, and the New York Fed. As of <span id="asof"></span>.</p>
+  <h1>Did the bigger tax refund cover higher fuel, tariffs, and debt costs?</h1>
+  <p class="sub">Per U.S. household, totals since January 20, 2025. Built daily from EIA, Treasury, the Federal Reserve, BEA, BLS, and IRS data, cross-checked against Brown University and the Yale Budget Lab. As of <span id="asof"></span>.</p>
 
   <div class="ledger" id="ledger"></div>
   <p class="kicker" id="kicker"></p>
   <p class="muted" id="aggregate"></p>
 
-  <h2>How the year has added up</h2>
-  <p class="muted">Cumulative cost per household since January 1, 2026. The refund boost is the full-season figure from the IRS.</p>
+  <h2>How it has added up</h2>
+  <p class="muted">Cumulative cost per household since Inauguration Day. The refund boost is the full-season figure from the IRS.</p>
   <div class="chart-wrap">
-    <svg class="chart" id="chart" viewBox="0 0 900 380" role="img" aria-label="Cumulative per-household costs through 2026"></svg>
+    <svg class="chart" id="chart" viewBox="0 0 900 400" role="img" aria-label="Cumulative per-household costs since January 2025"></svg>
     <div class="tip" id="tip"></div>
   </div>
   <div class="legend">
-    <span style="--c: var(--tariff)">Tariffs (Yale Budget Lab rate)</span>
-    <span style="--c: var(--gas)">Gasoline (Brown method)</span>
-    <span style="--c: var(--mortgage)">Mortgage rate gap (paid so far)</span>
+    <span style="--c: var(--tariff)">Tariffs (Treasury customs duties)</span>
+    <span style="--c: var(--fuel)">Gasoline + diesel (Brown method)</span>
+    <span style="--c: var(--debt)">Debt service (Fed ratio, income held)</span>
     <span style="--c: var(--refund)">Refund boost (IRS, full season)</span>
   </div>
 
   <h2>Each line, and where it comes from</h2>
 
   <div class="panel" id="p-refund"></div>
-  <div class="panel" id="p-gas"></div>
+  <div class="panel" id="p-fuel"></div>
   <div class="panel" id="p-tariff"></div>
-  <div class="panel" id="p-mortgage"></div>
+  <div class="panel" id="p-debt"></div>
 
   <h2>Have paychecks made up the difference?</h2>
   <div class="panel" id="p-wages"></div>
 
   <h2>What moves the numbers</h2>
   <div class="scroll"><table id="sens"></table></div>
+
+  <h2>What this ledger is not</h2>
+  <div class="panel"><ol class="caveats muted" id="caveats"></ol></div>
 
   <h2>Data freshness</h2>
   <div class="fresh" id="fresh"></div>
@@ -121,7 +124,7 @@
 <script>
 (function () {
   const D = window.LEDGER;
-  const H = D.headline, G = D.gas, T = D.tariffs, M = D.mortgage, R = D.refunds, W = D.wages;
+  const H = D.headline, F = D.fuel, T = D.tariffs, B = D.debt, M = D.mortgage, R = D.refunds, W = D.wages, P = D.params;
   const $ = (id) => document.getElementById(id);
   const usd = (n, digits = 0) => (n < 0 ? "−" : "") + "$" + Math.abs(n).toLocaleString("en-US", { maximumFractionDigits: digits, minimumFractionDigits: digits });
   const bn = (n) => (n < 0 ? "−" : "") + "$" + Math.abs(n).toFixed(1) + "B";
@@ -129,74 +132,72 @@
   const shortDate = (iso) => new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
   const monthName = (ym) => new Date(ym + "-15T12:00:00").toLocaleDateString("en-US", { month: "long", year: "numeric" });
   const pct = (x) => (x > 0 ? "+" : "") + x.toFixed(1) + "%";
+  const pts = (x) => (x > 0 ? "+" : "") + x.toFixed(2) + " pt";
 
   $("asof").textContent = fmtDate(D.as_of);
   $("built").textContent = D.built_at.replace("T", " ");
   $("repo").href = "https://github.com/joshfwaldman1/refund-tracker";
 
   // ---------- Ledger ----------
-  const mortgageShown = Math.max(H.mortgage_cost, 0);
   const rows = [
-    { c: "refund", label: "Bigger tax refund", note: `IRS: refunds up ${bn(R.aggregate_billion)} vs. 2025 (average refund +${usd(R.avg_refund_change)}), spread over every household`, amt: H.refund_boost, sign: 1 },
-    { c: "gas", label: "Extra gasoline since the Iran war", note: `${G.weeks_counted} weeks at the pump vs. a no-war price path (Brown method). Gap now ${usd(G.premium_now, 2)}/gal`, amt: -H.gas_cost, sign: -1 },
-    { c: "tariff", label: "Tariffs, year to date", note: `Yale Budget Lab: ${usd(T.annual_rate)} per household per year under current law, accrued ${T.days_accrued} days`, amt: -H.tariff_cost, sign: -1 },
-    { c: "mortgage", label: "Higher mortgage rates, paid so far", note: `2026 borrowers vs. the pre-war MBA forecast; ${usd(M.committed_annual_billion, 2)}B/yr now committed, falling on the $${Math.round(M.originations_counted_billion)}B of loans closed since March`, amt: -mortgageShown, sign: -1 },
+    { c: "refund", label: "Bigger tax refund, 2026 season", note: `IRS: refunds up ${bn(R.aggregate_billion)} vs. 2025 (average refund +${usd(R.avg_refund_change)}), spread over every household`, amt: H.refund_boost, sign: 1 },
+    { c: "fuel", label: "Gasoline and diesel since the Iran war", note: `${F.weeks_counted} weeks vs. a no-war price path (Brown method): gasoline ${usd(F.gasoline.per_household)} at the pump, diesel ${usd(F.diesel.per_household)} passed through in freight`, amt: -H.fuel_cost, sign: -1 },
+    { c: "tariff", label: "Tariffs since February 2025", note: `Customs duties collected above the pre-2025 run rate, ${bn(T.aggregate_billion)} in total; now ${usd(T.daily_rate_per_household, 2)} a day per household`, amt: -H.tariff_cost, sign: -1 },
+    { c: "debt", label: "Higher debt service since Q4 2024", note: `Rise in the Fed's household debt service ratio, income held at Q4 2024: mortgages +${usd(B.mortgage_ratio_only_per_household)}, consumer credit ${usd(B.consumer_ratio_only_per_household)}. Nominal dollars paid are up far more (${usd(H.debt_cost_nominal)}); see below`, amt: -H.debt_cost, sign: -1 },
   ];
-  const net = H.refund_boost - H.gas_cost - H.tariff_cost - mortgageShown;
   $("ledger").innerHTML = rows.map(r => `
     <div class="row">
       <div><span class="swatch" style="background: var(--${r.c})"></span><span class="label">${r.label}</span><span class="note">${r.note}</span></div>
-      <div class="amt tabnum ${r.sign > 0 ? "pos" : "neg"}">${r.sign > 0 ? "+" : ""}${usd(r.amt)}</div>
+      <div class="amt ${r.sign > 0 ? "pos" : "neg"}">${r.sign > 0 ? "+" : ""}${usd(r.amt)}</div>
     </div>`).join("") + `
     <div class="row total">
       <div><span class="label">Net, per household</span><span class="note">Refund boost minus the three costs</span></div>
-      <div class="amt tabnum ${net < 0 ? "neg" : "pos"}">${net > 0 ? "+" : ""}${usd(net)}</div>
+      <div class="amt ${H.net < 0 ? "neg" : "pos"}">${H.net > 0 ? "+" : ""}${usd(H.net)}</div>
     </div>`;
-  const ratio = (H.gas_cost + H.tariff_cost + mortgageShown) / H.refund_boost;
-  $("kicker").textContent = `For every $1 of extra refund, the average household has paid about ${usd(ratio, 2)} more for gas, tariffs, and mortgage rates so far this year.`;
-  $("aggregate").textContent = `Nationwide: ${bn(H.aggregate.refund_boost_billion)} in extra refunds against ${bn(H.aggregate.gas_billion)} in extra gasoline spending, ${bn(H.aggregate.tariff_billion)} in tariff costs, and ${bn(Math.max(H.aggregate.mortgage_paid_billion, 0))} in extra mortgage payments to date.`;
+  $("kicker").textContent = `For every $1 of extra refund, the average household has paid about ${usd(H.cost_per_refund_dollar, 2)} more in fuel, tariffs, and debt service.`;
+  $("aggregate").textContent = `Nationwide: ${bn(H.aggregate.refund_boost_billion)} in extra refunds against ${bn(H.aggregate.fuel_billion)} in extra fuel costs, ${bn(H.aggregate.tariff_billion)} in tariffs, and ${bn(H.aggregate.debt_billion)} in rate-driven debt service.`;
 
   // ---------- Chart ----------
   (function drawChart() {
     const svg = $("chart"), tip = $("tip");
-    const Wd = 900, Ht = 380, pad = { l: 56, r: 150, t: 16, b: 34 };
+    const Wd = 900, Ht = 400, pad = { l: 60, r: 160, t: 16, b: 40 };
     const data = D.ledger;
     const series = [
       { key: "tariffs", label: "Tariffs", color: "var(--tariff)" },
-      { key: "gas", label: "Gasoline", color: "var(--gas)" },
-      { key: "mortgage", label: "Mortgage", color: "var(--mortgage)" },
+      { key: "fuel", label: "Fuel", color: "var(--fuel)" },
+      { key: "debt", label: "Debt service", color: "var(--debt)" },
     ];
     const x0 = new Date(data[0].date + "T12:00:00"), x1 = new Date(data[data.length - 1].date + "T12:00:00");
-    const yMax = Math.max(H.refund_boost, ...data.map(d => Math.max(d.tariffs, d.gas, d.mortgage))) * 1.12;
+    const yMax = Math.max(H.refund_boost, ...data.map(d => Math.max(d.tariffs, d.debt, d.fuel))) * 1.08;
     const X = (iso) => pad.l + ((new Date(iso + "T12:00:00") - x0) / (x1 - x0)) * (Wd - pad.l - pad.r);
     const Y = (v) => Ht - pad.b - (Math.max(v, 0) / yMax) * (Ht - pad.t - pad.b);
-    const step = yMax > 1000 ? 250 : yMax > 400 ? 100 : 50;
+    const step = yMax > 2000 ? 500 : yMax > 1000 ? 250 : 100;
     let g = "";
     for (let v = 0; v <= yMax; v += step) {
       g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="var(--grid)" stroke-width="1"/>`;
       g += `<text x="${pad.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="12" fill="var(--ink-3)">$${v.toLocaleString()}</text>`;
     }
-    const months = {};
-    data.forEach(d => { const m = d.date.slice(0, 7); if (!months[m]) months[m] = d.date; });
-    Object.values(months).forEach(iso => {
-      g += `<text x="${X(iso)}" y="${Ht - pad.b + 18}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${new Date(iso + "T12:00:00").toLocaleDateString("en-US", { month: "short" })}</text>`;
+    const seen = {};
+    data.forEach(d => { const m = d.date.slice(0, 7); if (!seen[m]) seen[m] = d.date; });
+    Object.values(seen).forEach((iso, i) => {
+      if (i % 2) return;
+      const dt = new Date(iso + "T12:00:00");
+      const lab = dt.getMonth() === 0 || i === 0 ? dt.toLocaleDateString("en-US", { month: "short", year: "2-digit" }) : dt.toLocaleDateString("en-US", { month: "short" });
+      g += `<text x="${X(iso)}" y="${Ht - pad.b + 18}" text-anchor="middle" font-size="12" fill="var(--ink-3)">${lab}</text>`;
     });
     g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-width="1"/>`;
-    // refund reference line
-    g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(H.refund_boost)}" y2="${Y(H.refund_boost)}" stroke="var(--refund)" stroke-width="2" stroke-dasharray="6 5"/>`;
     const labelYs = [];
     const placeLabel = (y) => { let ly = y + 4; while (labelYs.some(v => Math.abs(v - ly) < 15)) ly += 15; labelYs.push(ly); return ly; };
     const last = data[data.length - 1];
-    // Reserve label slots top-down so neighbours never overlap.
     const slots = [["refund", H.refund_boost], ...series.map(s => [s.key, Math.max(last[s.key], 0)])]
       .sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => (acc[k] = placeLabel(Y(v)), acc), {});
+    g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(H.refund_boost)}" y2="${Y(H.refund_boost)}" stroke="var(--refund)" stroke-width="2" stroke-dasharray="6 5"/>`;
     g += `<text x="${Wd - pad.r + 8}" y="${slots.refund}" font-size="12.5" fill="var(--ink-2)">Refund boost ${usd(H.refund_boost)}</text>`;
     series.forEach(s => {
       const path = data.map((d, i) => `${i ? "L" : "M"}${X(d.date).toFixed(1)},${Y(d[s.key]).toFixed(1)}`).join("");
       g += `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
-      const ly = slots[s.key];
       g += `<circle cx="${X(last.date)}" cy="${Y(last[s.key])}" r="4" fill="${s.color}" stroke="var(--bg)" stroke-width="2"/>`;
-      g += `<text x="${Wd - pad.r + 8}" y="${ly}" font-size="12.5" fill="var(--ink-2)">${s.label} ${usd(Math.max(last[s.key], 0))}</text>`;
+      g += `<text x="${Wd - pad.r + 8}" y="${slots[s.key]}" font-size="12.5" fill="var(--ink-2)">${s.label} ${usd(Math.max(last[s.key], 0))}</text>`;
     });
     g += `<line id="xh" x1="0" x2="0" y1="${pad.t}" y2="${Ht - pad.b}" stroke="var(--ink-3)" stroke-width="1" style="display:none"/>`;
     g += `<rect x="${pad.l}" y="${pad.t}" width="${Wd - pad.l - pad.r}" height="${Ht - pad.t - pad.b}" fill="transparent" id="hit"/>`;
@@ -209,9 +210,10 @@
       data.forEach(d => { const dd = Math.abs(X(d.date) - mx); if (dd < bd) { bd = dd; best = d; } });
       xh.setAttribute("x1", X(best.date)); xh.setAttribute("x2", X(best.date)); xh.style.display = "";
       tip.style.display = "block";
-      tip.innerHTML = `<div style="justify-content:flex-start;color:var(--ink-2);margin-bottom:4px">Week of ${shortDate(best.date)}</div>` +
+      const total = best.tariffs + best.debt + best.fuel;
+      tip.innerHTML = `<div style="justify-content:flex-start;color:var(--ink-2);margin-bottom:4px">Week of ${shortDate(best.date)}, ${best.date.slice(0, 4)}</div>` +
         series.map(s => `<div><span>${s.label}</span><b>${usd(Math.max(best[s.key], 0))}</b></div>`).join("") +
-        `<div><span>Refund boost</span><b>${usd(H.refund_boost)}</b></div>`;
+        `<div><span>All three</span><b>${usd(total)}</b></div><div><span>Refund boost</span><b>${usd(H.refund_boost)}</b></div>`;
       const px = (ev.clientX - box.left), left = px > box.width * 0.6 ? px - tip.offsetWidth - 14 : px + 14;
       tip.style.left = left + "px"; tip.style.top = (ev.clientY - box.top - 10) + "px";
     });
@@ -220,77 +222,92 @@
 
   // ---------- Panels ----------
   const tag = (t) => `<span class="tag">${t}</span>`;
-  const brown = G.brown;
   $("p-refund").innerHTML = `
     <h3><span class="swatch" style="background: var(--refund)"></span>Bigger tax refund: +${usd(H.refund_boost)} per household ${tag("published")}</h3>
-    <p>Through ${fmtDate(R.as_of)}, the IRS had issued <b>${bn(R.aggregate_billion)} more</b> in refunds than at the same point in 2025 ($${(D.refunds.aggregate_billion + D.params.refund_total_2025_billion.value).toFixed(1)}B vs. $${D.params.refund_total_2025_billion.value.toFixed(1)}B). The average refund rose from ${usd(R.avg_refund_2025)} to ${usd(R.avg_refund_2026)}, a gain of ${usd(R.avg_refund_change)} for the ${R.refund_count_millions.toFixed(0)} million filers who got one.</p>
-    <p class="muted">The ledger spreads the extra refund dollars over all ${D.households_millions} million households so it is on the same footing as the cost lines, which also hit non-filers. This figure is fixed until the 2027 filing season.</p>`;
+    <p>Through ${fmtDate(R.as_of)}, the IRS had issued <b>${bn(R.aggregate_billion)} more</b> in refunds than at the same point in 2025 ($${(R.aggregate_billion + P.refund_total_2025_billion.value).toFixed(1)}B vs. $${P.refund_total_2025_billion.value.toFixed(1)}B). The average refund rose from ${usd(R.avg_refund_2025)} to ${usd(R.avg_refund_2026)}, a gain of ${usd(R.avg_refund_change)} for the ${R.refund_count_millions.toFixed(0)} million filers who got one.</p>
+    <p class="muted">The ledger spreads the extra refund dollars over all ${D.households_millions} million households so it is on the same footing as the cost lines, which also hit non-filers. The 2025 season carried no tax-law boost, so this is the whole refund side. Refunds understate the full tax cut: part of it arrived through lower withholding during 2025, which this line does not count. Fixed until the 2027 season.</p>`;
 
-  $("p-gas").innerHTML = `
-    <h3><span class="swatch" style="background: var(--gas)"></span>Gasoline: −${usd(H.gas_cost)} per household since February 28 ${tag("Brown method")}</h3>
-    <p>Regular gasoline is <b>${usd(G.latest_price, 2)}</b> (EIA, week of ${shortDate(G.latest_week)}). Without the war it would be about <b>${usd(G.latest_counterfactual, 2)}</b>: the pre-war price of ${usd(G.anchor_price, 3)} carried forward by the average seasonal price change in ${D.params.gas_seasonal_base_years.value.length} normal years. That gap of ${usd(G.premium_now, 2)} a gallon costs a household ${usd(G.weekly_extra_now, 2)} a week at ${G.gallons_per_year} gallons a year (BLS Consumer Expenditure Survey spending ÷ 2024 average price).</p>
-    <p class="muted">Cross-check: Brown University's Iran War Energy Cost Tracker, which uses the same counterfactual logic with EIA total consumption, put gasoline at <b>${usd(brown.gasoline_per_household)}</b> per household (${bn(brown.gasoline_billion)}) as of ${shortDate(brown.date)}, and ${usd(brown.gas_plus_diesel_per_household)} including diesel passed through in freight and goods. This ledger counts only household gallons, so it runs lower.</p>`;
+  const Gs = F.gasoline, Ds = F.diesel, brown = F.brown;
+  $("p-fuel").innerHTML = `
+    <h3><span class="swatch" style="background: var(--fuel)"></span>Gasoline and diesel: −${usd(H.fuel_cost)} per household since February 28 ${tag("Brown method")}</h3>
+    <p>Regular gasoline is <b>${usd(Gs.latest_price, 2)}</b> and diesel <b>${usd(Ds.latest_price, 2)}</b> (EIA, week of ${shortDate(F.latest_week)}). Without the war they would be about ${usd(Gs.latest_counterfactual, 2)} and ${usd(Ds.latest_counterfactual, 2)}: each pre-war price carried forward by the average seasonal price change in ${P.gas_seasonal_base_years.value.length} normal years. Gasoline is charged at ${Gs.gallons_per_year} gallons per household a year (BLS Consumer Expenditure Survey spending ÷ 2024 average price). Diesel is charged the way Brown charges it: all ${P.diesel_transport_gallons_billion.value}B gallons of transportation diesel a year, ${Ds.gallons_per_year} per household, passed through in freight and goods prices.</p>
+    <p class="muted">Cross-check: Brown University's Iran War Energy Cost Tracker put the combined figure at <b>${usd(brown.gas_plus_diesel_per_household)}</b> per household (${bn(brown.gas_plus_diesel_billion)}) as of ${shortDate(brown.date)}, with gasoline at ${usd(brown.gasoline_per_household)}. This ledger counts only household gasoline gallons, so it runs lower on gasoline. Full diesel pass-through is Brown's assumption and an upper bound; the incidence of diesel costs on households runs through freight margins with a lag.</p>`;
 
-  const C = T.customs;
   $("p-tariff").innerHTML = `
-    <h3><span class="swatch" style="background: var(--tariff)"></span>Tariffs: −${usd(H.tariff_cost)} per household, year to date ${tag("Yale Budget Lab")}</h3>
-    <p>The Yale Budget Lab estimates the tariffs in force cost the average household <b>${usd(T.annual_rate)} a year</b> under current law (State of U.S. Tariffs, ${fmtDate(T.vintage)}; effective tariff rate 11.0%, price level +0.7%). The ledger accrues that at ${usd(T.daily_rate, 2)} a day from January 1. The clock runs; the rate changes when Yale publishes a new estimate.</p>
-    <p class="muted">Treasury cross-check: gross customs duties are <b>${bn(C.gross_ytd_billion)}</b> in 2026 through ${monthName(C.reported_through.slice(0, 7))}, which is ${bn(C.incremental_ytd_billion)} (${usd(C.incremental_per_household)} per household) above the pre-2025 run rate of ${bn(C.baseline_monthly_billion)} a month. Since the Supreme Court struck down the IEEPA tariffs in February, <b>${bn(C.refunds_to_importers_billion)}</b> has been refunded, to importers. Households have received none of it.</p>`;
+    <h3><span class="swatch" style="background: var(--tariff)"></span>Tariffs: −${usd(H.tariff_cost)} per household since February 2025 ${tag("Treasury")}</h3>
+    <p>Since the first new tariffs took effect in February 2025, Treasury has collected <b>${bn(T.aggregate_billion)}</b> in customs duties above the pre-2025 run rate of ${bn(T.baseline_monthly_billion)} a month (Monthly Treasury Statement through ${monthName(T.reported_through.slice(0, 7))}, plus ${T.nowcast_days} days of ${monthName(D.as_of.slice(0, 7))} at ${monthName(T.reported_through.slice(0, 7))}'s pace). Current pace: ${usd(T.annualized_per_household)} per household a year.</p>
+    <p class="muted">Duties collected are a tax paid at the border; who bears it is an incidence question. Cavallo, Llamas and Vazquez (2025) find near-complete pass-through to U.S. import prices and partial, lagged pass-through at retail; the sensitivity table shows 75%. Collections also omit two costs households bear that never reach Treasury: markups on domestic goods that compete with tariffed imports, and the deadweight loss from forgone trade. The Yale Budget Lab's model-based estimate, which handles incidence explicitly, puts the tariffs now in force at about ${usd(T.yale_annual)} per household a year (State of U.S. Tariffs, ${fmtDate(T.yale_vintage)}), below the current collection pace because the Supreme Court struck down the IEEPA tariffs in February 2026. Since then <b>${bn(T.refunds_to_importers_billion)}</b> of those duties has been refunded, to importers; households have received none of it, and the prices they paid while the tariffs were in force are not refunded, so the ledger counts gross collections.</p>`;
 
-  const ex = M.example;
-  $("p-mortgage").innerHTML = `
-    <h3><span class="swatch" style="background: var(--mortgage)"></span>Mortgage rates: −${usd(mortgageShown)} per household paid so far; ${usd(M.committed_annual_billion, 2)}B a year now committed ${tag("flow-based")}</h3>
-    <p>The 30-year fixed rate is <b>${M.latest_rate.toFixed(2)}%</b> (Freddie Mac, ${shortDate(M.latest_week)}), up from a pre-war low of ${M.pre_war_low.toFixed(2)}%. Before the war, MBA forecast ${ex.primary.forecast.toFixed(1)}% for this quarter and Fannie Mae forecast ${ex.alt.forecast.toFixed(1)}%. Each week since March, the gap between the actual rate and the forecast is applied to that week's share of actual mortgage originations (New York Fed: $${M.originations["2026Q1"]}B in Q1, $${M.originations["2026Q2"]}B in Q2${M.nowcast_quarters.length ? "; " + M.nowcast_quarters.join(", ") + " nowcast at the Q2 pace" : ""}), fixed-rate loans only (${Math.round(M.fixed_share * 100)}%).</p>
-    <p>On the safe-side MBA path, 2026 borrowers are now committed to <b>${usd(M.committed_annual_billion, 2)}B a year</b> in extra payments (${usd(M.paid_to_date_billion, 2)}B paid so far). On Fannie Mae's lower path it is ${usd(M.alt.committed_annual_billion, 2)}B a year (${usd(M.alt.paid_to_date_billion, 2)}B paid). Rates ran <i>below</i> the MBA forecast from March into May, so that path partly nets out; they have been above it since June.</p>
-    <p class="muted">For one household buying now with a ${usd(M.example_loan)} loan: <b>${usd(ex.primary.extra_monthly)} a month</b> more than at the MBA forecast rate, ${usd(ex.alt.extra_monthly)} a month more than at Fannie Mae's. The per-household ledger figure is small because only a few million households borrow in a given year; the per-borrower figure is what they feel.</p>`;
+  const IP = B.interest_payments;
+  $("p-debt").innerHTML = `
+    <h3><span class="swatch" style="background: var(--debt)"></span>Debt service: −${usd(H.debt_cost)} per household since Q4 2024 ${tag("Fed + BEA")}</h3>
+    <p>The Federal Reserve's household debt service ratio is required mortgage and consumer-debt payments as a share of disposable income. It was ${B.ratio_base}% in Q4 2024 and ${B.ratio_latest}% in ${B.latest_published_quarter}. The mortgage component rose from ${B.mortgage_ratio_base}% to ${B.mortgage_ratio_latest}% (${pts(B.mortgage_ratio_latest - B.mortgage_ratio_base)}) as the stock of low-rate mortgages rolls into loans at 6% to 7%; the consumer-credit component fell from ${B.consumer_ratio_base}% to ${B.consumer_ratio_latest}% (${pts(B.consumer_ratio_latest - B.consumer_ratio_base)}) after the Fed's late-2025 rate cuts. Applying each quarter's change in the ratio to Q4 2024 income, so that growth in incomes and balances is not counted, the extra burden is <b>${bn(B.ratio_only_billion)}</b> since January 2025: mortgages ${usd(B.mortgage_ratio_only_per_household)} per household, consumer credit ${usd(B.consumer_ratio_only_per_household)}. At the latest ratio the mortgage piece runs ${bn(B.mortgage_ratio_only_annual_billion)} a year.</p>
+    <p>In nominal dollars the increase is far larger: debt service was ${bn(B.base_annual_billion)} a year in Q4 2024 and is about ${bn(B.base_annual_billion + B.annual_increase_billion)} now, ${bn(B.annual_increase_billion)} a year more, which sums to ${bn(B.aggregate_billion)} (${usd(H.debt_cost_nominal)} per household) since January 2025. BEA's monthly personal interest payments (non-mortgage) are running ${bn(IP.increase_annual_billion)} a year above ${monthName(IP.base_month)}, as of ${monthName(IP.latest_month)}. Most of that nominal rise tracks incomes and balances growing, not rates, so the ledger uses the ratio-based figure and shows the nominal one in the sensitivity table.</p>
+    <p class="muted">Quarters after ${B.latest_published_quarter} hold its ratio until the Fed publishes. For a household taking a ${usd(M.example_loan)} mortgage now at ${M.latest_rate.toFixed(2)}% (Freddie Mac, ${shortDate(M.latest_week)}), the payment is ${usd(M.example.primary.extra_monthly)} to ${usd(M.example.alt.extra_monthly)} a month above what the pre-war MBA and Fannie Mae forecasts implied. Credit-card APRs price off the prime rate, which follows the federal funds rate, unchanged in 2026; they are inside the consumer-credit component and have not risen.</p>`;
 
   const worst = W.worst_month;
   $("p-wages").innerHTML = `
-    <p>Real average hourly earnings are <b>${pct(W.real_hourly_yoy)}</b> from a year ago (${monthName(W.latest_month)}: wages ${pct(W.nominal_hourly_yoy)}, CPI ${pct(W.cpi_yoy)}). The low point was ${monthName(worst.month)} at ${pct(worst.real_yoy)}, when the gas spike pushed inflation to ${pct(worst.cpi_yoy)}. Real weekly earnings are ${pct(W.real_weekly_yoy)} on longer hours.</p>
-    <p class="muted">This is context, not a ledger line. The CPI already contains the gasoline and tariff price increases, so adding a real-wage loss to the lines above would count the same dollars twice.</p>`;
+    <p>Real average hourly earnings are <b>${pct(W.real_hourly_yoy)}</b> from a year ago (${monthName(W.latest_month)}: wages ${pct(W.nominal_hourly_yoy)}, CPI ${pct(W.cpi_yoy)}). The low point was ${monthName(worst.month)} at ${pct(worst.real_yoy)}, when the fuel spike pushed inflation to ${pct(worst.cpi_yoy)}. Real weekly earnings are ${pct(W.real_weekly_yoy)} on longer hours.</p>
+    <p class="muted">This is context, not a ledger line. The CPI already contains the fuel and tariff price increases, so adding a real-wage loss to the lines above would count the same dollars twice.</p>`;
 
   // ---------- Sensitivity ----------
   const S = D.sensitivity;
   const sens = [
-    ["Gasoline, no-war path from seasonal history (used)", usd(H.gas_cost)],
-    ["Gasoline, flat pre-war baseline instead", usd(S.gas_flat_prewar_baseline)],
-    ["Gasoline, same week a year earlier as baseline", usd(S.gas_year_ago_baseline)],
-    ["Gasoline, Brown University published figure", usd(S.gas_brown_published)],
-    ["Tariffs, Yale Budget Lab rate accrued (used)", usd(H.tariff_cost)],
-    ["Tariffs, customs duties collected above pre-2025 run rate", usd(S.tariffs_customs_receipts_basis)],
-    ["Mortgage, MBA 6.4% forecast path, paid so far (used)", usd(mortgageShown)],
-    ["Mortgage, Fannie Mae 6.0–6.1% path, paid so far", usd(Math.max(S.mortgage_alt_forecast_paid, 0))],
+    ["Fuel, no-war path from seasonal history, gasoline + diesel (used)", usd(H.fuel_cost)],
+    ["Fuel, gasoline only", usd(S.fuel_gasoline_only)],
+    ["Fuel, flat pre-war baseline instead of seasonal path", usd(S.fuel_flat_prewar_baseline)],
+    ["Fuel, same week a year earlier as baseline", usd(S.fuel_year_ago_baseline)],
+    ["Fuel, Brown University published figure (gasoline + diesel)", usd(S.fuel_brown_published)],
+    ["Tariffs, customs collected above pre-2025 run rate since Feb 2025 (used)", usd(H.tariff_cost)],
+    ["Tariffs, 75% borne by U.S. buyers (Cavallo et al. retail pass-through)", usd(S.tariffs_75pct_passthrough)],
+    ["Tariffs, reported months only, no nowcast", usd(S.tariffs_reported_months_only)],
+    ["Tariffs, Yale Budget Lab current-law rate, 2026 only", usd(S.tariffs_yale_rate_2026_only)],
+    ["Debt service, change in Fed ratio with income held at Q4 2024 (used)", usd(H.debt_cost)],
+    ["Debt service, mortgage ratio only", usd(S.debt_mortgage_ratio_only)],
+    ["Debt service, nominal dollar increase (includes income and balance growth)", usd(S.debt_nominal_dollar_increase)],
     [`Refund boost with 135M households instead of ${D.households_millions}M`, usd(S.households_135m.refund_boost)],
   ];
   $("sens").innerHTML = `<tr><th>Assumption</th><th class="num">Per household</th></tr>` +
     sens.map(([a, v]) => `<tr><td>${a}</td><td class="num">${v}</td></tr>`).join("");
 
+  // ---------- Caveats ----------
+  $("caveats").innerHTML = [
+    "It is an accounting of costs against one identified counterfactual per line (no war; pre-2025 tariff policy; Q4 2024 debt service), not a causal estimate of any single policy. The three counterfactuals are stated and differ.",
+    "Fuel and tariff costs are gross of any second-round effects: no substitution away from tariffed goods or driving, no deadweight loss, no effect of the tax law or tariffs on wages, employment, or the exchange rate.",
+    "The lines overlap at the margin. Tariffs and fuel both raise the CPI; the debt-service line is measured on nominal income and is not deflated. The overlap is small at this horizon but not zero.",
+    "The average household is not a typical household. Fuel and tariff burdens are larger as a share of income for lower-income households (Yale publishes deciles); the debt-service line falls almost entirely on households with a mortgage taken out or refinanced since 2022, and on revolving borrowers.",
+    "The refund line understates the tax cut (withholding changes are excluded) and measures it against 2025, not against a counterfactual in which the 2017 cuts expired.",
+  ].map(t => `<li>${t}</li>`).join("");
+
   // ---------- Freshness ----------
-  const F = D.freshness;
+  const Fr = D.freshness;
   $("fresh").innerHTML = [
-    ["EIA gasoline price", "week of " + shortDate(F.gas_latest_week)],
-    ["Freddie Mac mortgage rate", "week of " + shortDate(F.mortgage_latest_week)],
-    ["Treasury customs duties", "through " + monthName(F.customs_reported_through.slice(0, 7))],
-    ["NY Fed originations", "through " + F.originations_reported_through],
-    ["BLS CPI", monthName(F.cpi_latest_month.slice(0, 7))],
-    ["BLS earnings", monthName(F.earnings_latest_month.slice(0, 7))],
-    ["IRS refunds", "season through " + shortDate(F.irs_as_of)],
-    ["Yale tariff estimate", fmtDate(F.yale_vintage)],
+    ["EIA gasoline and diesel prices", "week of " + shortDate(Fr.fuel_latest_week)],
+    ["Treasury customs duties", "through " + monthName(Fr.customs_reported_through.slice(0, 7))],
+    ["Fed debt service ratio", Fr.debt_service_quarter],
+    ["BEA personal interest payments", monthName(Fr.interest_payments_month)],
+    ["Freddie Mac mortgage rate", "week of " + shortDate(Fr.mortgage_latest_week)],
+    ["BLS CPI", monthName(Fr.cpi_latest_month.slice(0, 7))],
+    ["BLS earnings", monthName(Fr.earnings_latest_month.slice(0, 7))],
+    ["IRS refunds", "season through " + shortDate(Fr.irs_as_of)],
+    ["Yale tariff estimate", fmtDate(Fr.yale_vintage)],
   ].map(([k, v]) => `<div><b>${k}</b><br>${v}</div>`).join("");
 
   // ---------- Sources ----------
-  const P = D.params;
   const src = [
     ["IRS Filing Season Statistics (refunds)", P.refund_total_2026_billion.url],
-    ["EIA weekly retail gasoline prices, via FRED (GASREGW)", "https://fred.stlouisfed.org/series/GASREGW"],
-    ["Brown University Climate Solutions Lab, Iran War Energy Cost Tracker (gas method and cross-check)", P.brown_crosscheck.url],
+    ["EIA weekly retail gasoline and diesel prices, via FRED (GASREGW, GASDESW)", "https://fred.stlouisfed.org/series/GASREGW"],
+    ["Brown University Climate Solutions Lab, Iran War Energy Cost Tracker (fuel method and cross-check)", P.brown_crosscheck.url],
     ["BLS Consumer Expenditure Survey 2024 (household gasoline spending)", P.cex_gasoline_spend_2024.url],
-    ["Yale Budget Lab, State of U.S. Tariffs (per-household tariff cost)", P.yale_household_cost_annual.url],
-    ["Treasury Monthly Treasury Statement, customs duties gross, refunds, net (Fiscal Data API)", "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"],
+    ["EIA, transportation diesel consumption", P.diesel_transport_gallons_billion.url],
+    ["Treasury Monthly Treasury Statement, customs duties (Fiscal Data API)", "https://fiscaldata.treasury.gov/datasets/monthly-treasury-statement/"],
+    ["Cavallo, Llamas and Vazquez (2025), tariff pass-through to U.S. prices", P.tariff_passthrough_sensitivity.url],
+    ["Yale Budget Lab, State of U.S. Tariffs (per-household cross-check)", P.yale_household_cost_annual.url],
+    ["Federal Reserve, Household Debt Service and Financial Obligations Ratios", P.debt_service_base_quarter.url],
+    ["BEA, disposable personal income and personal interest payments, via FRED (DSPI, B069RC1)", "https://fred.stlouisfed.org/series/B069RC1"],
     ["Freddie Mac Primary Mortgage Market Survey, via FRED (MORTGAGE30US)", "https://fred.stlouisfed.org/series/MORTGAGE30US"],
     ["New York Fed Household Debt and Credit Report (mortgage originations)", P.originations_quarterly_billion.url],
-    ["MBA Mortgage Finance Forecast, pre-war vintage (mortgage counterfactual)", P.mortgage_forecast_primary.url],
-    ["Fannie Mae Housing Forecast, February 2026 (alternate counterfactual)", P.mortgage_forecast_alt.url],
+    ["MBA and Fannie Mae pre-war mortgage-rate forecasts", P.mortgage_forecast_primary.url],
     ["BLS Current Employment Statistics and CPI, via FRED (real earnings)", "https://fred.stlouisfed.org/series/CES0500000003"],
     ["Census Bureau (household count)", P.households_millions.url],
   ];

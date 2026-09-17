@@ -7,6 +7,10 @@ Sources (all public, all keyless except FRED which prefers an API key):
   * CES0500000003    BLS average hourly earnings, total private, via FRED
   * CES0500000011    BLS average weekly earnings, total private, via FRED
   * MORTGAGE30US     Freddie Mac PMMS 30-year fixed rate, weekly, via FRED
+  * GASDESW          EIA weekly U.S. on-highway diesel price, via FRED
+  * TDSP/MDSP/CDSP   Fed household debt service ratios (total, mortgage, consumer), quarterly
+  * DSPI             BEA disposable personal income, monthly SAAR
+  * B069RC1          BEA personal interest payments (non-mortgage), monthly SAAR
   * MTS Table 4      Treasury Monthly Treasury Statement — customs duties
                      gross receipts, refunds, net (Fiscal Data API)
 
@@ -30,7 +34,8 @@ from datetime import datetime
 from pathlib import Path
 
 CACHE_PATH = Path(__file__).parent / "data" / "cache.json"
-FRED_SERIES = ["GASREGW", "CPIAUCSL", "CES0500000003", "CES0500000011", "MORTGAGE30US"]
+FRED_SERIES = ["GASREGW", "GASDESW", "CPIAUCSL", "CES0500000003", "CES0500000011", "MORTGAGE30US",
+               "TDSP", "MDSP", "CDSP", "DSPI", "B069RC1"]
 HEADERS = {"User-Agent": "refund-ledger/1.0 (public data tracker)"}
 
 socket.setdefaulttimeout(20)
@@ -180,6 +185,8 @@ def main() -> int:
         except Exception as error:  # noqa: BLE001 — best-effort by design
             print(f"  {series_id:<14} FRED failed ({error}); trying source fallback")
             try:
+                if series_id not in FALLBACKS:
+                    raise KeyError("no keyless fallback for this series")
                 observations, used = FALLBACKS[series_id](), "source"
             except Exception as fallback_error:  # noqa: BLE001
                 print(f"  {series_id:<14} fallback failed ({fallback_error})")

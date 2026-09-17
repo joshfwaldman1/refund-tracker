@@ -1,21 +1,24 @@
 """
 build.py — Turn raw observations into the household ledger and write docs/data.js.
 
-The ledger answers one question for calendar 2026:
+The ledger answers one question:
 
-    Did the bigger tax refund cover what households are paying extra for
-    gasoline, tariffs, and higher mortgage rates?
+    Did the bigger 2026 tax refund cover what households have paid extra, in
+    total since January 2025, for fuel, tariffs, and debt service?
 
 Each leg copies its method from a published analysis rather than inventing one:
 
-    Gas       Brown University Climate Solutions Lab, Iran War Energy Cost
-              Tracker: actual pump price vs. a no-war counterfactual built from
-              the pre-war price and historical seasonal price changes, times
-              consumption, per Census household.
-    Tariffs   Yale Budget Lab, State of U.S. Tariffs: annual per-household cost
-              under current law, accrued daily.
-    Mortgage  Pre-war rate forecasts (MBA; Fannie Mae) as the counterfactual,
-              applied to actual origination flows (New York Fed) week by week.
+    Fuel      Brown University Climate Solutions Lab, Iran War Energy Cost
+              Tracker: actual gasoline and diesel prices vs. a no-war
+              counterfactual built from the pre-war price and historical
+              seasonal price changes, times consumption, per Census household.
+    Tariffs   Treasury customs duties collected above the pre-2025 run rate,
+              total since February 2025 (Yale Budget Lab rate as cross-check).
+    Debt      Federal Reserve household debt service ratio times BEA disposable
+              income: the rise in annual debt service since Q4 2024, accrued
+              quarter by quarter (BEA personal interest payments as the monthly
+              read on the consumer-credit part; pre-war mortgage forecasts vs.
+              NY Fed origination flows for new borrowers).
     Refunds   IRS Filing Season Statistics, 2026 vs. 2025 same week.
 
 Every parameter is tagged:
@@ -91,6 +94,13 @@ PARAMS = {
                   "computed average when the cache holds a full year of 2024 weekly data.",
         "url": "https://www.eia.gov/petroleum/gasdiesel/",
     },
+    "diesel_transport_gallons_billion": {
+        "value": 46.5, "tag": "published",
+        "source": "EIA: about 46.5 billion gallons of distillate fuel consumed by the U.S. "
+                  "transportation sector per year (on-highway diesel). Brown passes all of it "
+                  "through to households via freight and goods prices; so does this ledger.",
+        "url": "https://www.eia.gov/tools/faqs/faq.php?id=24&t=10",
+    },
     "brown_crosscheck": {
         "value": {"date": "2026-09-07", "gasoline_per_household": 422, "gasoline_billion": 55,
                   "gas_plus_diesel_per_household": 770, "gas_plus_diesel_billion": 100.9},
@@ -100,7 +110,18 @@ PARAMS = {
                   "(household and commercial), this ledger uses CEX household gallons only.",
         "url": "https://iranwarcost.watson.brown.edu/",
     },
-    # ---- Tariffs (method: Yale Budget Lab) ----------------------------------
+    # ---- Tariffs (Treasury receipts; Yale Budget Lab cross-check) ------------
+    "tariff_start_month": {
+        "value": "2025-02-28", "tag": "published",
+        "source": "First month with new-term tariffs in force (China 10% on Feb 4, 2025).",
+    },
+    "tariff_passthrough_sensitivity": {
+        "value": 0.75, "tag": "judgment",
+        "source": "Share of duties borne by U.S. buyers in the sensitivity row. Cavallo, Llamas & "
+                  "Vazquez (2025) find near-complete pass-through to import prices with partial, "
+                  "lagged pass-through at retail; the headline uses gross collections (100%).",
+        "url": "https://www.hbs.edu/faculty/Pages/item.aspx?num=67208",
+    },
     "yale_household_cost_annual": {
         "value": 1100.0, "tag": "published",
         "source": "Yale Budget Lab, State of U.S. Tariffs, Aug 24 2026: estimated household cost "
@@ -114,7 +135,14 @@ PARAMS = {
         "tag": "judgment",
         "source": "Pre-2025-tariff run rate of gross customs duties (cross-check only).",
     },
-    "ledger_year_start": {"value": "2026-01-01", "tag": "judgment", "source": "Calendar 2026: the year the larger refunds arrived."},
+    "ledger_start": {"value": "2025-01-20", "tag": "published", "source": "Inauguration Day. Totals run from here."},
+    # ---- Debt service -------------------------------------------------------
+    "debt_service_base_quarter": {
+        "value": "2024-10-01", "tag": "judgment",
+        "source": "Q4 2024, the last full quarter before the term. Debt service above this "
+                  "quarter's annual dollar level counts as the increase.",
+        "url": "https://www.federalreserve.gov/releases/housedebt/",
+    },
     # ---- Mortgages ----------------------------------------------------------
     "originations_quarterly_billion": {
         "value": {"2026Q1": 530.0, "2026Q2": 505.0},
@@ -234,19 +262,13 @@ def seasonal_factors(prices: dict[str, float]) -> list[float]:
     return [sum(ratios_by_k[k]) / len(ratios_by_k[k]) for k in range(max_k + 1)]
 
 
-def gas_leg(gas: list[dict], households: float) -> dict:
+def fuel_leg(series: list[dict], households: float, gallons_per_year: float, gallons_source: str) -> dict:
     """
-    Extra gasoline spending since the war, Brown method:
+    Extra spending on one fuel since the war, Brown method:
     weekly gap = actual price - (pre-war price x seasonal factor);
     cost = gap x household gallons per week.
     """
-    prices = series_map(gas)
-    weeks_2024 = [v for d, v in prices.items() if d.startswith("2024")]
-    if len(weeks_2024) >= 45:
-        avg_2024, avg_2024_source = sum(weeks_2024) / len(weeks_2024), "computed from EIA weekly series"
-    else:
-        avg_2024, avg_2024_source = p("avg_gas_price_2024"), "EIA published 2024 annual average"
-    gallons_per_year = p("cex_gasoline_spend_2024") / avg_2024
+    prices = series_map(series)
     gallons_per_week = gallons_per_year / 52.0
 
     factors = seasonal_factors(prices)
@@ -284,55 +306,182 @@ def gas_leg(gas: list[dict], households: float) -> dict:
         "weekly_extra_now": round((latest["price"] - latest["counterfactual"]) * gallons_per_week, 2),
         "anchor_price": anchor_price,
         "gallons_per_year": round(gallons_per_year),
-        "avg_price_2024": round(avg_2024, 3),
-        "avg_price_2024_source": avg_2024_source,
+        "gallons_source": gallons_source,
         "weeks_counted": len(weeks),
-        "brown": p("brown_crosscheck"),
         "path": path,
+    }
+
+
+def household_gasoline_gallons(gas: list[dict]) -> tuple[float, str]:
+    """CEX 2024 gasoline dollars / 2024 average pump price."""
+    prices = series_map(gas)
+    weeks_2024 = [v for d, v in prices.items() if d.startswith("2024")]
+    if len(weeks_2024) >= 45:
+        avg = sum(weeks_2024) / len(weeks_2024)
+        return p("cex_gasoline_spend_2024") / avg, f"CEX $2,645 / ${avg:.2f} 2024 average price (EIA weekly)"
+    avg = p("avg_gas_price_2024")
+    return p("cex_gasoline_spend_2024") / avg, f"CEX $2,645 / ${avg:.2f} EIA 2024 annual average"
+
+
+def fuels_leg(gas: list[dict], diesel: list[dict], households: float) -> dict:
+    """Gasoline plus diesel, each by the Brown method, combined per household."""
+    gas_gal, gas_src = household_gasoline_gallons(gas)
+    diesel_gal = p("diesel_transport_gallons_billion") * 1e9 / (households * 1e6)
+    g = fuel_leg(gas, households, gas_gal, gas_src)
+    d = fuel_leg(diesel, households, diesel_gal, "EIA transportation distillate / households")
+    combined_path = []
+    d_by_week = {r["date"]: r["cumulative"] for r in d["path"]}
+    for r in g["path"]:
+        combined_path.append({"date": r["date"], "cumulative": round(r["cumulative"] + d_by_week.get(r["date"], 0.0), 2)})
+    total = g["per_household"] + d["per_household"]
+    return {
+        "per_household": total,
+        "aggregate_billion": round(g["aggregate_billion"] + d["aggregate_billion"], 1),
+        "gasoline": {k: v for k, v in g.items() if k != "path"},
+        "diesel": {k: v for k, v in d.items() if k != "path"},
+        "per_household_flat_baseline": g["per_household_flat_baseline"] + d["per_household_flat_baseline"],
+        "per_household_yoy_baseline": g["per_household_yoy_baseline"] + d["per_household_yoy_baseline"],
+        "latest_week": g["latest_week"],
+        "weeks_counted": g["weeks_counted"],
+        "brown": p("brown_crosscheck"),
+        "path": combined_path,
     }
 
 
 def tariff_leg(customs: list[dict], households: float, as_of: date) -> dict:
     """
-    Yale's annual per-household cost accrued by the day, plus a Treasury
-    customs-receipts cross-check (gross duties, refunds to importers, and the
-    amount collected above the pre-2025 run rate).
+    Total tariffs collected above the pre-2025 run rate since February 2025
+    (Treasury Monthly Treasury Statement), with the current month nowcast at
+    the last reported month's daily pace. Yale Budget Lab's annual per-household
+    estimate is the cross-check on the run rate.
     """
-    annual = p("yale_household_cost_annual")
-    start = parse(p("ledger_year_start"))
-    days = (as_of - start).days + 1
-    accrued = annual * days / 365.0
-
     by_month = {r["date"]: r for r in customs}
     baseline = sum(by_month[m]["gross"] for m in p("customs_baseline_months")) / len(p("customs_baseline_months"))
     refund_baseline = sum(by_month[m]["refunds"] for m in p("customs_baseline_months")) / len(p("customs_baseline_months"))
-    months = [r for r in customs if r["date"] >= p("ledger_year_start")]
-    gross_ytd = sum(r["gross"] for r in months)
+    months = [r for r in customs if r["date"] >= p("tariff_start_month")]
     incremental = sum(r["gross"] - baseline for r in months)
     refunds_to_importers = sum(max(r["refunds"] - refund_baseline, 0.0) for r in months)
 
+    last = months[-1]
+    last_end = parse(last["date"])
+    daily_rate = (last["gross"] - baseline) / last_end.day
+    days_uncovered = max((as_of - last_end).days, 0)
+    nowcast = daily_rate * days_uncovered
+    total = incremental + nowcast
+    months_elapsed = (as_of - parse(p("tariff_start_month")).replace(day=1)).days / 30.4375
+
     return {
-        "per_household": round(accrued),
-        "aggregate_billion": round(accrued * households * 1e6 / 1e9, 1),
-        "daily_rate": round(annual / 365.0, 2),
-        "annual_rate": annual,
-        "days_accrued": days,
-        "vintage": p("yale_vintage"),
-        "customs": {
-            "reported_through": months[-1]["date"],
-            "gross_ytd_billion": round(gross_ytd / 1e9, 1),
-            "incremental_ytd_billion": round(incremental / 1e9, 1),
-            "incremental_per_household": round(incremental / (households * 1e6)),
-            "refunds_to_importers_billion": round(refunds_to_importers / 1e9, 1),
-            "refunds_to_importers_per_household": round(refunds_to_importers / (households * 1e6)),
-            "baseline_monthly_billion": round(baseline / 1e9, 2),
-            "monthly": [
-                {"month": r["date"][:7], "gross_billion": round(r["gross"] / 1e9, 2),
-                 "refunds_billion": round(r["refunds"] / 1e9, 2),
-                 "incremental_billion": round((r["gross"] - baseline) / 1e9, 2)}
-                for r in customs if r["date"] >= "2025-01-01"
-            ],
+        "per_household": round(total / (households * 1e6)),
+        "aggregate_billion": round(total / 1e9, 1),
+        "reported_billion": round(incremental / 1e9, 1),
+        "reported_through": last["date"],
+        "nowcast_days": days_uncovered,
+        "nowcast_billion": round(nowcast / 1e9, 1),
+        "daily_rate_per_household": round(daily_rate / (households * 1e6), 2),
+        "annualized_per_household": round(daily_rate * 365 / (households * 1e6)),
+        "months_elapsed": round(months_elapsed, 1),
+        "baseline_monthly_billion": round(baseline / 1e9, 2),
+        "refunds_to_importers_billion": round(refunds_to_importers / 1e9, 1),
+        "refunds_to_importers_per_household": round(refunds_to_importers / (households * 1e6)),
+        "yale_annual": p("yale_household_cost_annual"),
+        "yale_vintage": p("yale_vintage"),
+        "yale_accrued_2026": round(p("yale_household_cost_annual") * ((as_of - date(2026, 1, 1)).days + 1) / 365),
+        "monthly": [
+            {"month": r["date"][:7], "gross_billion": round(r["gross"] / 1e9, 2),
+             "refunds_billion": round(r["refunds"] / 1e9, 2),
+             "incremental_billion": round((r["gross"] - baseline) / 1e9, 2)}
+            for r in customs if r["date"] >= "2025-01-01"
+        ],
+    }
+
+
+def debt_service_leg(cache: dict, households: float, as_of: date) -> dict:
+    """
+    Increase in household debt service since Q4 2024, in dollars.
+
+    Annual debt service ($) for a quarter = Fed debt service ratio (% of DPI)
+    x that quarter's average disposable personal income (BEA, SAAR). The rise
+    above the Q4 2024 level, divided by four, is the extra paid in that
+    quarter; quarters after the last published ratio use the last ratio with
+    the latest DPI. Mortgage and consumer pieces come from MDSP and CDSP.
+    BEA personal interest payments (monthly) give a fresher read on the
+    consumer-credit part alone.
+    """
+    tdsp, mdsp, cdsp = series_map(cache["TDSP"]), series_map(cache["MDSP"]), series_map(cache["CDSP"])
+    dpi = series_map(cache["DSPI"])
+
+    def quarter_dpi(qstart: str) -> float:
+        start = parse(qstart)
+        vals = [v for d, v in dpi.items() if parse(d).year == start.year and (parse(d).month - 1) // 3 == (start.month - 1) // 3]
+        return sum(vals) / len(vals) if vals else max(dpi.values())
+
+    base_q = p("debt_service_base_quarter")
+    base_total = tdsp[base_q] / 100 * quarter_dpi(base_q) * 1e9
+    base_mort = mdsp[base_q] / 100 * quarter_dpi(base_q) * 1e9
+    base_cons = cdsp[base_q] / 100 * quarter_dpi(base_q) * 1e9
+
+    last_q = sorted(tdsp)[-1]
+    quarters = []
+    q = parse(base_q)
+    q = date(q.year + (q.month + 3 > 12), (q.month + 3 - 1) % 12 + 1, 1)  # next quarter
+    cumulative = cumulative_mort = cumulative_cons = cumulative_ratio_only = 0.0
+    ratio_only_mort = ratio_only_cons = 0.0
+    base_income = quarter_dpi(base_q)
+    while q <= as_of:
+        qs = q.isoformat()
+        published = qs in tdsp
+        ratio_t, ratio_m, ratio_c = (tdsp[qs], mdsp[qs], cdsp[qs]) if published else (tdsp[last_q], mdsp[last_q], cdsp[last_q])
+        income = quarter_dpi(qs)
+        annual_t, annual_m, annual_c = (ratio_t / 100 * income * 1e9, ratio_m / 100 * income * 1e9, ratio_c / 100 * income * 1e9)
+        q_end = date(q.year + (q.month + 3 > 12), (q.month + 3 - 1) % 12 + 1, 1) - timedelta(days=1)
+        share = 1.0 if q_end <= as_of else ((as_of - q).days + 1) / ((q_end - q).days + 1)
+        cumulative += (annual_t - base_total) / 4 * share
+        cumulative_mort += (annual_m - base_mort) / 4 * share
+        cumulative_cons += (annual_c - base_cons) / 4 * share
+        # Ratio change only: holds income at the Q4 2024 level, so income growth is not counted.
+        cumulative_ratio_only += (ratio_t - tdsp[base_q]) / 100 * base_income * 1e9 / 4 * share
+        ratio_only_mort += (ratio_m - mdsp[base_q]) / 100 * base_income * 1e9 / 4 * share
+        ratio_only_cons += (ratio_c - cdsp[base_q]) / 100 * base_income * 1e9 / 4 * share
+        quarters.append({"quarter": f"{q.year}Q{(q.month - 1) // 3 + 1}", "published": published,
+                         "ratio": round(ratio_t, 2), "annual_billion": round(annual_t / 1e9, 1),
+                         "increase_annual_billion": round((annual_t - base_total) / 1e9, 1),
+                         "ratio_only_increase_annual_billion": round((ratio_t - tdsp[base_q]) / 100 * base_income, 1),
+                         "share_elapsed": round(share, 2)})
+        q = date(q.year + (q.month + 3 > 12), (q.month + 3 - 1) % 12 + 1, 1)
+
+    latest_annual_increase = quarters[-1]["increase_annual_billion"]
+    latest_pub = [r for r in quarters if r["published"]][-1]
+    interest = series_map(cache["B069RC1"])
+    int_base = interest[sorted(d for d in interest if d <= "2024-12-01")[-1]]
+    int_latest_d = sorted(interest)[-1]
+
+    return {
+        "per_household": round(cumulative / (households * 1e6)),
+        "aggregate_billion": round(cumulative / 1e9, 1),
+        "ratio_only_per_household": round(cumulative_ratio_only / (households * 1e6)),
+        "ratio_only_billion": round(cumulative_ratio_only / 1e9, 1),
+        "mortgage_ratio_only_per_household": round(ratio_only_mort / (households * 1e6)),
+        "consumer_ratio_only_per_household": round(ratio_only_cons / (households * 1e6)),
+        "ratio_only_annual_billion": round((tdsp[last_q] - tdsp[base_q]) / 100 * base_income, 1),
+        "mortgage_ratio_only_annual_billion": round((mdsp[last_q] - mdsp[base_q]) / 100 * base_income, 1),
+        "mortgage_per_household": round(cumulative_mort / (households * 1e6)),
+        "consumer_per_household": round(cumulative_cons / (households * 1e6)),
+        "annual_increase_billion": latest_annual_increase,
+        "annual_increase_per_household": round(latest_annual_increase * 1e9 / (households * 1e6)),
+        "latest_published_quarter": latest_pub["quarter"],
+        "latest_published_increase_billion": latest_pub["increase_annual_billion"],
+        "ratio_base": round(tdsp[base_q], 2),
+        "ratio_latest": round(tdsp[last_q], 2),
+        "mortgage_ratio_base": round(mdsp[base_q], 2), "mortgage_ratio_latest": round(mdsp[last_q], 2),
+        "consumer_ratio_base": round(cdsp[base_q], 2), "consumer_ratio_latest": round(cdsp[last_q], 2),
+        "base_annual_billion": round(base_total / 1e9, 1),
+        "interest_payments": {
+            "base_month": "2024-12", "base_billion": int_base,
+            "latest_month": int_latest_d[:7], "latest_billion": interest[int_latest_d],
+            "increase_annual_billion": round(interest[int_latest_d] - int_base, 1),
+            "increase_annual_per_household": round((interest[int_latest_d] - int_base) * 1e9 / (households * 1e6)),
         },
+        "quarters": quarters,
     }
 
 
@@ -447,24 +596,49 @@ def wages_panel(ahe: list[dict], awe: list[dict], cpi: list[dict]) -> dict:
     }
 
 
-def weekly_ledger(gas: dict, tariffs: dict, mortgage: dict, households: float, as_of: date) -> list[dict]:
-    """Weekly cumulative per-household series for the chart, Mondays from Jan 5, 2026."""
-    gas_by_week = {r["date"]: r["cumulative"] for r in gas["path"]}
-    mort_by_week = {r["date"]: r["paid_to_date_billion"] * 1e9 / (households * 1e6) for r in mortgage["path"]}
-    start = parse(p("ledger_year_start"))
+def weekly_ledger(fuel: dict, tariffs: dict, debt: dict, customs: list[dict], households: float, as_of: date) -> list[dict]:
+    """Weekly cumulative per-household series for the chart, Mondays from Inauguration Day."""
+    start = parse(p("ledger_start"))
+    hh = households * 1e6
+
+    # Tariffs: each reported month spread over its days; uncovered days at the nowcast pace.
+    baseline = tariffs["baseline_monthly_billion"] * 1e9
+    daily = {}
+    for r in customs:
+        if r["date"] < p("tariff_start_month"):
+            continue
+        end = parse(r["date"])
+        per_day = (r["gross"] - baseline) / end.day / hh
+        for n in range(1, end.day + 1):
+            daily[end.replace(day=n)] = per_day
+    d = parse(tariffs["reported_through"]) + timedelta(days=1)
+    while d <= as_of:
+        daily[d] = tariffs["daily_rate_per_household"]
+        d += timedelta(days=1)
+
+    # Debt service: each quarter's increase spread over its days.
+    debt_daily = {}
+    for r in debt["quarters"]:
+        year, qn = int(r["quarter"][:4]), int(r["quarter"][-1])
+        q0 = date(year, (qn - 1) * 3 + 1, 1)
+        q1 = date(year + (qn == 4), (qn % 4) * 3 + 1, 1)
+        ndays = (q1 - q0).days
+        per_day = r["ratio_only_increase_annual_billion"] * 1e9 / 4 / ndays / hh
+        for n in range(ndays):
+            debt_daily[q0 + timedelta(days=n)] = per_day
+
+    fuel_by_week = {r["date"]: r["cumulative"] for r in fuel["path"]}
     week = start + timedelta(days=(7 - start.weekday()) % 7)
-    rows, last_gas, last_mort = [], 0.0, 0.0
+    rows, last_fuel, tariff_cum, debt_cum, cursor = [], 0.0, 0.0, 0.0, start
     while week <= as_of:
-        days = (week - start).days + 1
-        tariff_cum = tariffs["annual_rate"] * days / 365.0
-        match = [d for d in gas_by_week if abs((parse(d) - week).days) <= 3]
+        while cursor <= week:
+            tariff_cum += daily.get(cursor, 0.0)
+            debt_cum += debt_daily.get(cursor, 0.0)
+            cursor += timedelta(days=1)
+        match = [k for k in fuel_by_week if abs((parse(k) - week).days) <= 3]
         if match:
-            last_gas = gas_by_week[match[0]]
-        match = [d for d in mort_by_week if abs((parse(d) - week).days) <= 3]
-        if match:
-            last_mort = mort_by_week[match[0]]
-        rows.append({"date": week.isoformat(), "gas": round(last_gas), "tariffs": round(tariff_cum),
-                     "mortgage": round(last_mort)})
+            last_fuel = fuel_by_week[match[0]]
+        rows.append({"date": week.isoformat(), "fuel": round(last_fuel), "tariffs": round(tariff_cum), "debt": round(debt_cum)})
         week += timedelta(days=7)
     return rows
 
@@ -478,62 +652,73 @@ def main() -> None:
     as_of = date.today()
 
     refunds = refund_leg(households)
-    gas = gas_leg(cache["GASREGW"], households)
+    fuel = fuels_leg(cache["GASREGW"], cache["GASDESW"], households)
     tariffs = tariff_leg(cache["MTS_CUSTOMS"], households, as_of)
+    debt = debt_service_leg(cache, households, as_of)
     mortgage = mortgage_leg(cache["MORTGAGE30US"], households, as_of)
     wages = wages_panel(cache["CES0500000003"], cache["CES0500000011"], cache["CPIAUCSL"])
-    ledger = weekly_ledger(gas, tariffs, mortgage, households, as_of)
+    ledger = weekly_ledger(fuel, tariffs, debt, cache["MTS_CUSTOMS"], households, as_of)
 
-    costs = gas["per_household"] + tariffs["per_household"] + mortgage["per_household_paid"]
+    costs = fuel["per_household"] + tariffs["per_household"] + debt["ratio_only_per_household"]
     net = refunds["per_household"] - costs
 
     output = {
         "built_at": datetime.now().isoformat(timespec="seconds"),
         "as_of": as_of.isoformat(),
+        "ledger_start": p("ledger_start"),
         "households_millions": households,
         "headline": {
             "refund_boost": refunds["per_household"],
-            "gas_cost": gas["per_household"],
+            "fuel_cost": fuel["per_household"],
             "tariff_cost": tariffs["per_household"],
-            "mortgage_cost": mortgage["per_household_paid"],
+            "debt_cost": debt["ratio_only_per_household"],
+            "debt_cost_nominal": debt["per_household"],
             "total_cost": costs,
             "net": net,
             "cost_per_refund_dollar": round(costs / refunds["per_household"], 2),
             "aggregate": {
                 "refund_boost_billion": refunds["aggregate_billion"],
-                "gas_billion": gas["aggregate_billion"],
+                "fuel_billion": fuel["aggregate_billion"],
                 "tariff_billion": tariffs["aggregate_billion"],
-                "mortgage_paid_billion": mortgage["paid_to_date_billion"],
-                "mortgage_committed_annual_billion": mortgage["committed_annual_billion"],
+                "debt_billion": debt["ratio_only_billion"],
+                "debt_nominal_billion": debt["aggregate_billion"],
             },
         },
         "refunds": refunds,
-        "gas": gas,
+        "fuel": fuel,
         "tariffs": tariffs,
-        "mortgage": mortgage,
+        "debt": debt,
+        "mortgage": {k: v for k, v in mortgage.items() if k != "path"},
         "wages": wages,
         "ledger": ledger,
         "sensitivity": {
-            "gas_flat_prewar_baseline": gas["per_household_flat_baseline"],
-            "gas_year_ago_baseline": gas["per_household_yoy_baseline"],
-            "gas_brown_published": gas["brown"]["gasoline_per_household"],
-            "tariffs_customs_receipts_basis": tariffs["customs"]["incremental_per_household"],
-            "mortgage_alt_forecast_paid": mortgage["alt"]["per_household_paid"],
-            "mortgage_alt_forecast_annual": mortgage["alt"]["per_household_annual"],
+            "fuel_flat_prewar_baseline": fuel["per_household_flat_baseline"],
+            "fuel_year_ago_baseline": fuel["per_household_yoy_baseline"],
+            "fuel_gasoline_only": fuel["gasoline"]["per_household"],
+            "fuel_brown_published": fuel["brown"]["gas_plus_diesel_per_household"],
+            "tariffs_reported_months_only": round(tariffs["reported_billion"] * 1e9 / (households * 1e6)),
+            "tariffs_75pct_passthrough": round(tariffs["per_household"] * p("tariff_passthrough_sensitivity")),
+            "tariffs_yale_rate_2026_only": tariffs["yale_accrued_2026"],
+            "debt_nominal_dollar_increase": debt["per_household"],
+            "debt_mortgage_ratio_only": debt["mortgage_ratio_only_per_household"],
+            "debt_consumer_ratio_only": debt["consumer_ratio_only_per_household"],
+            "debt_consumer_only": debt["consumer_per_household"],
             "households_135m": {
                 "refund_boost": round(refunds["aggregate_billion"] * 1e9 / 135e6),
-                "gas_cost": round(gas["aggregate_billion"] * 1e9 / 135e6),
+                "tariff_cost": round(tariffs["aggregate_billion"] * 1e9 / 135e6),
             },
         },
         "freshness": {
-            "gas_latest_week": gas["latest_week"],
+            "fuel_latest_week": fuel["latest_week"],
             "mortgage_latest_week": mortgage["latest_week"],
-            "customs_reported_through": tariffs["customs"]["reported_through"],
+            "customs_reported_through": tariffs["reported_through"],
+            "debt_service_quarter": debt["latest_published_quarter"],
+            "interest_payments_month": debt["interest_payments"]["latest_month"],
             "originations_reported_through": sorted(mortgage["originations"])[-1],
             "cpi_latest_month": cache["CPIAUCSL"][-1]["date"],
             "earnings_latest_month": cache["CES0500000003"][-1]["date"],
             "irs_as_of": refunds["as_of"],
-            "yale_vintage": tariffs["vintage"],
+            "yale_vintage": tariffs["yale_vintage"],
         },
         "params": {k: {"value": v["value"], "tag": v["tag"], "source": v["source"], "url": v.get("url")}
                    for k, v in PARAMS.items()},
@@ -542,13 +727,12 @@ def main() -> None:
     OUTPUT_JSON.write_text(json.dumps(output, indent=1))
     OUTPUT_JS.write_text("window.LEDGER = " + json.dumps(output) + ";\n")
 
-    print(f"as of {as_of}  (households: {households}M)")
-    print(f"  refund boost        +${refunds['per_household']:>6,}  (${refunds['aggregate_billion']}B; avg refund +${refunds['avg_refund_change']})")
-    print(f"  gas since war       -${gas['per_household']:>6,}  (${gas['aggregate_billion']}B; {gas['weeks_counted']} wks; gap now ${gas['premium_now']}/gal; Brown: ${gas['brown']['gasoline_per_household']})")
-    print(f"  tariffs (Yale)      -${tariffs['per_household']:>6,}  (${tariffs['aggregate_billion']}B; customs-basis ${tariffs['customs']['incremental_per_household']}; refunds to importers ${tariffs['customs']['refunds_to_importers_billion']}B)")
-    print(f"  mortgage paid       -${mortgage['per_household_paid']:>6,}  (${mortgage['paid_to_date_billion']}B paid; ${mortgage['committed_annual_billion']}B/yr committed; alt forecast ${mortgage['alt']['paid_to_date_billion']}B / ${mortgage['alt']['committed_annual_billion']}B/yr)")
+    print(f"as of {as_of}  (households: {households}M; totals since {p('ledger_start')})")
+    print(f"  refund boost        +${refunds['per_household']:>6,}  (${refunds['aggregate_billion']}B)")
+    print(f"  fuel since war      -${fuel['per_household']:>6,}  (${fuel['aggregate_billion']}B; gas ${fuel['gasoline']['per_household']} + diesel ${fuel['diesel']['per_household']}; Brown ${fuel['brown']['gas_plus_diesel_per_household']})")
+    print(f"  tariffs since Feb25 -${tariffs['per_household']:>6,}  (${tariffs['aggregate_billion']}B incl ${tariffs['nowcast_billion']}B nowcast; run rate ${tariffs['annualized_per_household']}/yr vs Yale ${tariffs['yale_annual']})")
+    print(f"  debt service        -${debt['ratio_only_per_household']:>6,}  (ratio-only ${debt['ratio_only_billion']}B; mortgage ${debt['mortgage_ratio_only_per_household']} consumer ${debt['consumer_ratio_only_per_household']}; nominal $ increase ${debt['per_household']}/hh = ${debt['aggregate_billion']}B; BEA interest +${debt['interest_payments']['increase_annual_billion']}B/yr)")
     print(f"  net                 {'-' if net < 0 else '+'}${abs(net):>6,}")
-    print(f"  real hourly earnings YoY ({wages['latest_month']}): {wages['real_hourly_yoy']:+.2f}%")
     print(f"wrote {OUTPUT_JS} and {OUTPUT_JSON}")
 
 
