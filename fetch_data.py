@@ -96,8 +96,15 @@ def fetch_bls(series_id: str) -> list[dict]:
     with urllib.request.urlopen(request) as response:
         payload = json.loads(response.read().decode())
     rows = payload["Results"]["series"][0]["data"]
+    def numeric(text: str) -> bool:
+        try:
+            float(text)
+            return True
+        except ValueError:  # BLS prints '-' for months with no release (e.g. the Oct 2025 shutdown)
+            return False
+
     out = [{"date": f"{r['year']}-{r['period'][1:]}-01", "value": float(r["value"])}
-           for r in rows if r["period"].startswith("M") and r["period"] != "M13"]
+           for r in rows if r["period"].startswith("M") and r["period"] != "M13" and numeric(r["value"])]
     return sorted(out, key=lambda r: r["date"])
 
 
@@ -107,12 +114,13 @@ def fetch_eia_gas_history() -> list[dict]:
     html = http_get("https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx?n=PET&s=EMM_EPMR_PTE_NUS_DPG&f=W")
     out = []
     # Each row: a "YYYY Mon-DD" label then up to five "MM/DD" dates each followed by a value.
+    html = html.replace("&nbsp;", " ")
     for row in re.findall(r"<tr[^>]*>(.*?)</tr>", html, re.S):
-        year_match = re.search(r"(\d{4})\s*[A-Z][a-z]{2}", re.sub(r"<[^>]+>", " ", row))
+        cells = [re.sub(r"<[^>]+>", "", c).strip() for c in re.findall(r"<td[^>]*>(.*?)</td>", row, re.S)]
+        year_match = re.fullmatch(r"(\d{4})-[A-Z][a-z]{2}", cells[0]) if cells else None
         if not year_match:
             continue
         year = int(year_match.group(1))
-        cells = [re.sub(r"<[^>]+>", "", c).strip() for c in re.findall(r"<td[^>]*>(.*?)</td>", row, re.S)]
         for i in range(1, len(cells) - 1, 2):
             date_cell, value_cell = cells[i], cells[i + 1]
             if re.fullmatch(r"\d{2}/\d{2}", date_cell) and re.fullmatch(r"[\d.]+", value_cell):
