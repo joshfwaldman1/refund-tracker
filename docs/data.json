@@ -1,5 +1,5 @@
 {
- "built_at": "2026-09-17T07:20:54",
+ "built_at": "2026-09-17T17:39:39",
  "as_of": "2026-09-17",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
@@ -428,39 +428,39 @@
   ]
  },
  "mortgage": {
-  "per_household_annual": 4,
+  "per_household_annual": 5,
   "per_household_paid": -1,
-  "committed_annual_billion": 0.48,
+  "committed_annual_billion": 0.63,
   "paid_to_date_billion": -0.07,
-  "originations_counted_billion": 985.8,
-  "latest_rate": 6.76,
-  "latest_week": "2026-09-10",
+  "originations_counted_billion": 1020.8,
+  "latest_rate": 6.95,
+  "latest_week": "2026-09-17",
   "pre_war_low": 5.98,
   "primary": {
    "name": "MBA Mortgage Finance Forecast (pre-war, Dec 2025 / Feb 2026 vintage)",
-   "committed_annual_billion": 0.48,
+   "committed_annual_billion": 0.63,
    "paid_to_date_billion": -0.07,
-   "per_household_annual": 4,
+   "per_household_annual": 5,
    "per_household_paid": -1,
-   "originations_counted_billion": 985.8
+   "originations_counted_billion": 1020.8
   },
   "alt": {
    "name": "Fannie Mae Housing Forecast (February 2026 vintage)",
-   "committed_annual_billion": 3.08,
+   "committed_annual_billion": 3.34,
    "paid_to_date_billion": 0.61,
-   "per_household_annual": 23,
+   "per_household_annual": 25,
    "per_household_paid": 5,
-   "originations_counted_billion": 985.8
+   "originations_counted_billion": 1020.8
   },
   "example_loan": 330000,
   "example": {
    "primary": {
     "forecast": 6.4,
-    "extra_monthly": 78
+    "extra_monthly": 120
    },
    "alt": {
     "forecast": 6.0,
-    "extra_monthly": 164
+    "extra_monthly": 206
    }
   },
   "fixed_share": 0.9,
@@ -1145,7 +1145,7 @@
  },
  "freshness": {
   "fuel_latest_week": "2026-09-14",
-  "mortgage_latest_week": "2026-09-10",
+  "mortgage_latest_week": "2026-09-17",
   "customs_reported_through": "2026-08-31",
   "debt_service_quarter": "2026Q1",
   "interest_payments_month": "2026-07",
