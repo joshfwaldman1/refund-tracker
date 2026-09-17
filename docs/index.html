@@ -184,15 +184,17 @@
     g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(0)}" y2="${Y(0)}" stroke="var(--line)" stroke-width="1"/>`;
     // refund reference line
     g += `<line x1="${pad.l}" x2="${Wd - pad.r}" y1="${Y(H.refund_boost)}" y2="${Y(H.refund_boost)}" stroke="var(--refund)" stroke-width="2" stroke-dasharray="6 5"/>`;
-    g += `<text x="${Wd - pad.r + 8}" y="${Y(H.refund_boost) + 4}" font-size="12.5" fill="var(--ink-2)">Refund boost ${usd(H.refund_boost)}</text>`;
     const labelYs = [];
+    const placeLabel = (y) => { let ly = y + 4; while (labelYs.some(v => Math.abs(v - ly) < 15)) ly += 15; labelYs.push(ly); return ly; };
+    const last = data[data.length - 1];
+    // Reserve label slots top-down so neighbours never overlap.
+    const slots = [["refund", H.refund_boost], ...series.map(s => [s.key, Math.max(last[s.key], 0)])]
+      .sort((a, b) => b[1] - a[1]).reduce((acc, [k, v]) => (acc[k] = placeLabel(Y(v)), acc), {});
+    g += `<text x="${Wd - pad.r + 8}" y="${slots.refund}" font-size="12.5" fill="var(--ink-2)">Refund boost ${usd(H.refund_boost)}</text>`;
     series.forEach(s => {
       const path = data.map((d, i) => `${i ? "L" : "M"}${X(d.date).toFixed(1)},${Y(d[s.key]).toFixed(1)}`).join("");
       g += `<path d="${path}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round"/>`;
-      const last = data[data.length - 1];
-      let ly = Y(last[s.key]) + 4;
-      while (labelYs.some(y => Math.abs(y - ly) < 15)) ly += 15;
-      labelYs.push(ly);
+      const ly = slots[s.key];
       g += `<circle cx="${X(last.date)}" cy="${Y(last[s.key])}" r="4" fill="${s.color}" stroke="var(--bg)" stroke-width="2"/>`;
       g += `<text x="${Wd - pad.r + 8}" y="${ly}" font-size="12.5" fill="var(--ink-2)">${s.label} ${usd(Math.max(last[s.key], 0))}</text>`;
     });
