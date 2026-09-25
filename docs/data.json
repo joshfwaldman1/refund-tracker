@@ -1,23 +1,23 @@
 {
- "built_at": "2026-09-24T17:52:54",
- "as_of": "2026-09-24",
+ "built_at": "2026-09-25T17:59:02",
+ "as_of": "2026-09-25",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
  "headline": {
   "refund_boost": 377,
   "fuel_cost": 685,
-  "tariff_cost": 2506,
+  "tariff_cost": 2510,
   "debt_cost": 129,
-  "debt_cost_nominal": 1513,
-  "total_cost": 3320,
-  "net": -2943,
-  "cost_per_refund_dollar": 8.81,
+  "debt_cost_nominal": 1516,
+  "total_cost": 3324,
+  "net": -2947,
+  "cost_per_refund_dollar": 8.82,
   "aggregate": {
    "refund_boost_billion": 49.78,
    "fuel_billion": 90.4,
-   "tariff_billion": 330.9,
+   "tariff_billion": 331.4,
    "debt_billion": 17.1,
-   "debt_nominal_billion": 199.7
+   "debt_nominal_billion": 200.1
   }
  },
  "refunds": {
@@ -197,12 +197,12 @@
   ]
  },
  "tariffs": {
-  "per_household": 2506,
-  "aggregate_billion": 330.9,
+  "per_household": 2510,
+  "aggregate_billion": 331.4,
   "reported_billion": 318.7,
   "reported_through": "2026-08-31",
-  "nowcast_days": 24,
-  "nowcast_billion": 12.2,
+  "nowcast_days": 25,
+  "nowcast_billion": 12.7,
   "daily_rate_per_household": 3.84,
   "annualized_per_household": 1402,
   "months_elapsed": 19.7,
@@ -211,7 +211,7 @@
   "refunds_to_importers_per_household": 905,
   "yale_annual": 1100.0,
   "yale_vintage": "2026-08-24",
-  "yale_accrued_2026": 805,
+  "yale_accrued_2026": 808,
   "monthly": [
    {
     "month": "2025-01",
@@ -336,16 +336,16 @@
   ]
  },
  "debt": {
-  "per_household": 1513,
-  "aggregate_billion": 199.7,
+  "per_household": 1516,
+  "aggregate_billion": 200.1,
   "ratio_only_per_household": 129,
   "ratio_only_billion": 17.1,
-  "mortgage_ratio_only_per_household": 456,
+  "mortgage_ratio_only_per_household": 457,
   "consumer_ratio_only_per_household": -327,
   "ratio_only_annual_billion": -2.5,
   "mortgage_ratio_only_annual_billion": 31.3,
-  "mortgage_per_household": 1181,
-  "consumer_per_household": 331,
+  "mortgage_per_household": 1184,
+  "consumer_per_household": 332,
   "annual_increase_billion": 176.3,
   "annual_increase_per_household": 1336,
   "latest_published_quarter": "2026Q2",
@@ -427,7 +427,7 @@
     "annual_billion": 2651.0,
     "increase_annual_billion": 176.3,
     "ratio_only_increase_annual_billion": -2.5,
-    "share_elapsed": 0.93
+    "share_elapsed": 0.95
    }
   ]
  },
@@ -435,7 +435,7 @@
   "per_household_annual": 6,
   "per_household_paid": 0,
   "committed_annual_billion": 0.8,
-  "paid_to_date_billion": -0.06,
+  "paid_to_date_billion": -0.05,
   "originations_counted_billion": 1055.8,
   "latest_rate": 7.03,
   "latest_week": "2026-09-24",
@@ -443,7 +443,7 @@
   "primary": {
    "name": "MBA Mortgage Finance Forecast (pre-war, Dec 2025 / Feb 2026 vintage)",
    "committed_annual_billion": 0.8,
-   "paid_to_date_billion": -0.06,
+   "paid_to_date_billion": -0.05,
    "per_household_annual": 6,
    "per_household_paid": 0,
    "originations_counted_billion": 1055.8
@@ -451,7 +451,7 @@
   "alt": {
    "name": "Fannie Mae Housing Forecast (February 2026 vintage)",
    "committed_annual_billion": 3.63,
-   "paid_to_date_billion": 0.68,
+   "paid_to_date_billion": 0.69,
    "per_household_annual": 27,
    "per_household_paid": 5,
    "originations_counted_billion": 1055.8
@@ -1142,15 +1142,15 @@
   "fuel_gasoline_only": 381,
   "fuel_brown_published": 770,
   "tariffs_reported_months_only": 2414,
-  "tariffs_75pct_passthrough": 1880,
-  "tariffs_yale_rate_2026_only": 805,
-  "debt_nominal_dollar_increase": 1513,
-  "debt_mortgage_ratio_only": 456,
+  "tariffs_75pct_passthrough": 1882,
+  "tariffs_yale_rate_2026_only": 808,
+  "debt_nominal_dollar_increase": 1516,
+  "debt_mortgage_ratio_only": 457,
   "debt_consumer_ratio_only": -327,
-  "debt_consumer_only": 331,
+  "debt_consumer_only": 332,
   "households_135m": {
    "refund_boost": 369,
-   "tariff_cost": 2451
+   "tariff_cost": 2455
   }
  },
  "freshness": {
