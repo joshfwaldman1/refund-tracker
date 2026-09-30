@@ -1,23 +1,23 @@
 {
- "built_at": "2026-09-29T18:41:22",
- "as_of": "2026-09-29",
+ "built_at": "2026-09-30T18:28:45",
+ "as_of": "2026-09-30",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
  "headline": {
   "refund_boost": 377,
   "fuel_cost": 721,
-  "tariff_cost": 2526,
-  "debt_cost": 129,
-  "debt_cost_nominal": 1531,
-  "total_cost": 3376,
-  "net": -2999,
-  "cost_per_refund_dollar": 8.95,
+  "tariff_cost": 2530,
+  "debt_cost": 130,
+  "debt_cost_nominal": 1640,
+  "total_cost": 3381,
+  "net": -3004,
+  "cost_per_refund_dollar": 8.97,
   "aggregate": {
    "refund_boost_billion": 49.78,
    "fuel_billion": 95.3,
-   "tariff_billion": 333.4,
-   "debt_billion": 17.0,
-   "debt_nominal_billion": 202.1
+   "tariff_billion": 333.9,
+   "debt_billion": 17.1,
+   "debt_nominal_billion": 216.4
   }
  },
  "refunds": {
@@ -201,12 +201,12 @@
   ]
  },
  "tariffs": {
-  "per_household": 2526,
-  "aggregate_billion": 333.4,
+  "per_household": 2530,
+  "aggregate_billion": 333.9,
   "reported_billion": 318.7,
   "reported_through": "2026-08-31",
-  "nowcast_days": 29,
-  "nowcast_billion": 14.7,
+  "nowcast_days": 30,
+  "nowcast_billion": 15.2,
   "daily_rate_per_household": 3.84,
   "annualized_per_household": 1402,
   "months_elapsed": 19.9,
@@ -215,7 +215,7 @@
   "refunds_to_importers_per_household": 905,
   "yale_annual": 1100.0,
   "yale_vintage": "2026-08-24",
-  "yale_accrued_2026": 820,
+  "yale_accrued_2026": 823,
   "monthly": [
    {
     "month": "2025-01",
@@ -340,42 +340,42 @@
   ]
  },
  "debt": {
-  "per_household": 1531,
-  "aggregate_billion": 202.1,
-  "ratio_only_per_household": 129,
-  "ratio_only_billion": 17.0,
-  "mortgage_ratio_only_per_household": 459,
-  "consumer_ratio_only_per_household": -330,
+  "per_household": 1640,
+  "aggregate_billion": 216.4,
+  "ratio_only_per_household": 130,
+  "ratio_only_billion": 17.1,
+  "mortgage_ratio_only_per_household": 463,
+  "consumer_ratio_only_per_household": -333,
   "ratio_only_annual_billion": -2.5,
-  "mortgage_ratio_only_annual_billion": 31.3,
-  "mortgage_per_household": 1194,
-  "consumer_per_household": 337,
-  "annual_increase_billion": 176.3,
-  "annual_increase_per_household": 1336,
+  "mortgage_ratio_only_annual_billion": 31.4,
+  "mortgage_per_household": 1254,
+  "consumer_per_household": 385,
+  "annual_increase_billion": 198.8,
+  "annual_increase_per_household": 1506,
   "latest_published_quarter": "2026Q2",
-  "latest_published_increase_billion": 152.3,
+  "latest_published_increase_billion": 174.0,
   "ratio_base": 11.12,
   "ratio_latest": 11.11,
   "mortgage_ratio_base": 5.69,
   "mortgage_ratio_latest": 5.83,
   "consumer_ratio_base": 5.43,
   "consumer_ratio_latest": 5.28,
-  "base_annual_billion": 2474.7,
+  "base_annual_billion": 2488.9,
   "interest_payments": {
    "base_month": "2024-12",
-   "base_billion": 561.6,
-   "latest_month": "2026-07",
-   "latest_billion": 604.3,
-   "increase_annual_billion": 42.7,
-   "increase_annual_per_household": 323
+   "base_billion": 556.3,
+   "latest_month": "2026-08",
+   "latest_billion": 618.9,
+   "increase_annual_billion": 62.6,
+   "increase_annual_per_household": 474
   },
   "quarters": [
    {
     "quarter": "2025Q1",
     "published": true,
     "ratio": 11.11,
-    "annual_billion": 2505.8,
-    "increase_annual_billion": 31.1,
+    "annual_billion": 2511.7,
+    "increase_annual_billion": 22.7,
     "ratio_only_increase_annual_billion": -3.8,
     "share_elapsed": 1.0
    },
@@ -383,8 +383,8 @@
     "quarter": "2025Q2",
     "published": true,
     "ratio": 11.12,
-    "annual_billion": 2534.8,
-    "increase_annual_billion": 60.1,
+    "annual_billion": 2548.0,
+    "increase_annual_billion": 59.0,
     "ratio_only_increase_annual_billion": 0.4,
     "share_elapsed": 1.0
    },
@@ -392,35 +392,35 @@
     "quarter": "2025Q3",
     "published": true,
     "ratio": 11.23,
-    "annual_billion": 2582.9,
-    "increase_annual_billion": 108.2,
-    "ratio_only_increase_annual_billion": 23.8,
+    "annual_billion": 2596.2,
+    "increase_annual_billion": 107.3,
+    "ratio_only_increase_annual_billion": 23.9,
     "share_elapsed": 1.0
    },
    {
     "quarter": "2025Q4",
     "published": true,
     "ratio": 11.32,
-    "annual_billion": 2617.0,
-    "increase_annual_billion": 142.4,
-    "ratio_only_increase_annual_billion": 44.6,
+    "annual_billion": 2638.6,
+    "increase_annual_billion": 149.7,
+    "ratio_only_increase_annual_billion": 44.8,
     "share_elapsed": 1.0
    },
    {
     "quarter": "2026Q1",
     "published": true,
     "ratio": 11.16,
-    "annual_billion": 2614.5,
-    "increase_annual_billion": 139.8,
-    "ratio_only_increase_annual_billion": 8.1,
+    "annual_billion": 2643.0,
+    "increase_annual_billion": 154.1,
+    "ratio_only_increase_annual_billion": 8.2,
     "share_elapsed": 1.0
    },
    {
     "quarter": "2026Q2",
     "published": true,
     "ratio": 11.11,
-    "annual_billion": 2627.0,
-    "increase_annual_billion": 152.3,
+    "annual_billion": 2662.9,
+    "increase_annual_billion": 174.0,
     "ratio_only_increase_annual_billion": -2.5,
     "share_elapsed": 1.0
    },
@@ -428,10 +428,10 @@
     "quarter": "2026Q3",
     "published": false,
     "ratio": 11.11,
-    "annual_billion": 2651.0,
-    "increase_annual_billion": 176.3,
+    "annual_billion": 2687.7,
+    "increase_annual_billion": 198.8,
     "ratio_only_increase_annual_billion": -2.5,
-    "share_elapsed": 0.99
+    "share_elapsed": 1.0
    }
   ]
  },
@@ -439,7 +439,7 @@
   "per_household_annual": 6,
   "per_household_paid": 0,
   "committed_annual_billion": 0.8,
-  "paid_to_date_billion": -0.05,
+  "paid_to_date_billion": -0.04,
   "originations_counted_billion": 1055.8,
   "latest_rate": 7.03,
   "latest_week": "2026-09-24",
@@ -447,7 +447,7 @@
   "primary": {
    "name": "MBA Mortgage Finance Forecast (pre-war, Dec 2025 / Feb 2026 vintage)",
    "committed_annual_billion": 0.8,
-   "paid_to_date_billion": -0.05,
+   "paid_to_date_billion": -0.04,
    "per_household_annual": 6,
    "per_household_paid": 0,
    "originations_counted_billion": 1055.8
@@ -457,7 +457,7 @@
    "committed_annual_billion": 3.63,
    "paid_to_date_billion": 0.73,
    "per_household_annual": 27,
-   "per_household_paid": 5,
+   "per_household_paid": 6,
    "originations_counted_billion": 1055.8
   },
   "example_loan": 330000,
@@ -813,7 +813,7 @@
    "date": "2025-09-08",
    "fuel": 0,
    "tariffs": 710,
-   "debt": 29
+   "debt": 30
   },
   {
    "date": "2025-09-15",
@@ -861,7 +861,7 @@
    "date": "2025-11-03",
    "fuel": 0,
    "tariffs": 1048,
-   "debt": 71
+   "debt": 72
   },
   {
    "date": "2025-11-10",
@@ -873,7 +873,7 @@
    "date": "2025-11-17",
    "fuel": 0,
    "tariffs": 1133,
-   "debt": 84
+   "debt": 85
   },
   {
    "date": "2025-11-24",
@@ -885,7 +885,7 @@
    "date": "2025-12-01",
    "fuel": 0,
    "tariffs": 1217,
-   "debt": 97
+   "debt": 98
   },
   {
    "date": "2025-12-08",
@@ -903,7 +903,7 @@
    "date": "2025-12-22",
    "fuel": 0,
    "tariffs": 1329,
-   "debt": 116
+   "debt": 117
   },
   {
    "date": "2025-12-29",
@@ -915,7 +915,7 @@
    "date": "2026-01-05",
    "fuel": 0,
    "tariffs": 1403,
-   "debt": 125
+   "debt": 126
   },
   {
    "date": "2026-01-12",
@@ -933,19 +933,19 @@
    "date": "2026-01-26",
    "fuel": 0,
    "tariffs": 1515,
-   "debt": 129
+   "debt": 130
   },
   {
    "date": "2026-02-02",
    "fuel": 0,
    "tariffs": 1553,
-   "debt": 130
+   "debt": 131
   },
   {
    "date": "2026-02-09",
    "fuel": 0,
    "tariffs": 1590,
-   "debt": 131
+   "debt": 132
   },
   {
    "date": "2026-02-16",
@@ -957,25 +957,25 @@
    "date": "2026-02-23",
    "fuel": 0,
    "tariffs": 1663,
-   "debt": 134
+   "debt": 135
   },
   {
    "date": "2026-03-02",
    "fuel": 1,
    "tariffs": 1698,
-   "debt": 135
+   "debt": 136
   },
   {
    "date": "2026-03-09",
    "fuel": 16,
    "tariffs": 1726,
-   "debt": 136
+   "debt": 137
   },
   {
    "date": "2026-03-16",
    "fuel": 34,
    "tariffs": 1754,
-   "debt": 137
+   "debt": 138
   },
   {
    "date": "2026-03-23",
@@ -987,7 +987,7 @@
    "date": "2026-03-30",
    "fuel": 82,
    "tariffs": 1810,
-   "debt": 140
+   "debt": 141
   },
   {
    "date": "2026-04-06",
@@ -999,13 +999,13 @@
    "date": "2026-04-13",
    "fuel": 135,
    "tariffs": 1867,
-   "debt": 139
+   "debt": 140
   },
   {
    "date": "2026-04-20",
    "fuel": 158,
    "tariffs": 1896,
-   "debt": 139
+   "debt": 140
   },
   {
    "date": "2026-04-27",
@@ -1017,25 +1017,25 @@
    "date": "2026-05-04",
    "fuel": 211,
    "tariffs": 1951,
-   "debt": 138
+   "debt": 139
   },
   {
    "date": "2026-05-11",
    "fuel": 242,
    "tariffs": 1975,
-   "debt": 138
+   "debt": 139
   },
   {
    "date": "2026-05-18",
    "fuel": 272,
    "tariffs": 1999,
-   "debt": 137
+   "debt": 138
   },
   {
    "date": "2026-05-25",
    "fuel": 301,
    "tariffs": 2024,
-   "debt": 137
+   "debt": 138
   },
   {
    "date": "2026-06-01",
@@ -1047,13 +1047,13 @@
    "date": "2026-06-08",
    "fuel": 349,
    "tariffs": 2077,
-   "debt": 136
+   "debt": 137
   },
   {
    "date": "2026-06-15",
    "fuel": 369,
    "tariffs": 2105,
-   "debt": 136
+   "debt": 137
   },
   {
    "date": "2026-06-22",
@@ -1065,13 +1065,13 @@
    "date": "2026-06-29",
    "fuel": 399,
    "tariffs": 2162,
-   "debt": 135
+   "debt": 136
   },
   {
    "date": "2026-07-06",
    "fuel": 412,
    "tariffs": 2191,
-   "debt": 135
+   "debt": 136
   },
   {
    "date": "2026-07-13",
@@ -1083,43 +1083,43 @@
    "date": "2026-07-20",
    "fuel": 447,
    "tariffs": 2250,
-   "debt": 134
+   "debt": 135
   },
   {
    "date": "2026-07-27",
    "fuel": 470,
    "tariffs": 2279,
-   "debt": 134
+   "debt": 135
   },
   {
    "date": "2026-08-03",
    "fuel": 492,
    "tariffs": 2307,
-   "debt": 133
+   "debt": 134
   },
   {
    "date": "2026-08-10",
    "fuel": 514,
    "tariffs": 2334,
-   "debt": 133
+   "debt": 134
   },
   {
    "date": "2026-08-17",
    "fuel": 537,
    "tariffs": 2361,
-   "debt": 133
+   "debt": 134
   },
   {
    "date": "2026-08-24",
    "fuel": 563,
    "tariffs": 2388,
-   "debt": 132
+   "debt": 133
   },
   {
    "date": "2026-08-31",
    "fuel": 587,
    "tariffs": 2415,
-   "debt": 132
+   "debt": 133
   },
   {
    "date": "2026-09-07",
@@ -1131,13 +1131,13 @@
    "date": "2026-09-14",
    "fuel": 648,
    "tariffs": 2469,
-   "debt": 131
+   "debt": 132
   },
   {
    "date": "2026-09-21",
    "fuel": 685,
    "tariffs": 2495,
-   "debt": 131
+   "debt": 132
   },
   {
    "date": "2026-09-28",
@@ -1152,15 +1152,15 @@
   "fuel_gasoline_only": 400,
   "fuel_brown_published": 770,
   "tariffs_reported_months_only": 2414,
-  "tariffs_75pct_passthrough": 1894,
-  "tariffs_yale_rate_2026_only": 820,
-  "debt_nominal_dollar_increase": 1531,
-  "debt_mortgage_ratio_only": 459,
-  "debt_consumer_ratio_only": -330,
-  "debt_consumer_only": 337,
+  "tariffs_75pct_passthrough": 1898,
+  "tariffs_yale_rate_2026_only": 823,
+  "debt_nominal_dollar_increase": 1640,
+  "debt_mortgage_ratio_only": 463,
+  "debt_consumer_ratio_only": -333,
+  "debt_consumer_only": 385,
   "households_135m": {
    "refund_boost": 369,
-   "tariff_cost": 2470
+   "tariff_cost": 2473
   }
  },
  "freshness": {
@@ -1168,7 +1168,7 @@
   "mortgage_latest_week": "2026-09-24",
   "customs_reported_through": "2026-08-31",
   "debt_service_quarter": "2026Q2",
-  "interest_payments_month": "2026-07",
+  "interest_payments_month": "2026-08",
   "originations_reported_through": "2026Q2",
   "cpi_latest_month": "2026-08-01",
   "earnings_latest_month": "2026-08-01",
