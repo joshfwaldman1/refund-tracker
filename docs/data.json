@@ -1,23 +1,23 @@
 {
- "built_at": "2026-10-04T17:39:18",
- "as_of": "2026-10-04",
+ "built_at": "2026-10-06T18:56:37",
+ "as_of": "2026-10-06",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
  "headline": {
   "refund_boost": 377,
-  "fuel_cost": 721,
-  "tariff_cost": 2545,
-  "debt_cost": 130,
-  "debt_cost_nominal": 1656,
-  "total_cost": 3396,
-  "net": -3019,
-  "cost_per_refund_dollar": 9.01,
+  "fuel_cost": 754,
+  "tariff_cost": 2553,
+  "debt_cost": 129,
+  "debt_cost_nominal": 1665,
+  "total_cost": 3436,
+  "net": -3059,
+  "cost_per_refund_dollar": 9.11,
   "aggregate": {
    "refund_boost_billion": 49.78,
-   "fuel_billion": 95.3,
-   "tariff_billion": 335.9,
+   "fuel_billion": 99.6,
+   "tariff_billion": 336.9,
    "debt_billion": 17.1,
-   "debt_nominal_billion": 218.6
+   "debt_nominal_billion": 219.7
   }
  },
  "refunds": {
@@ -30,42 +30,42 @@
   "as_of": "2026-05-08"
  },
  "fuel": {
-  "per_household": 721,
-  "aggregate_billion": 95.3,
+  "per_household": 754,
+  "aggregate_billion": 99.6,
   "gasoline": {
-   "per_household": 400,
-   "aggregate_billion": 52.9,
-   "per_household_flat_baseline": 555,
-   "per_household_yoy_baseline": 444,
-   "latest_price": 4.465,
-   "latest_counterfactual": 3.206,
-   "latest_week": "2026-09-28",
-   "premium_now": 1.26,
-   "weekly_extra_now": 19.38,
+   "per_household": 418,
+   "aggregate_billion": 55.2,
+   "per_household_flat_baseline": 578,
+   "per_household_yoy_baseline": 463,
+   "latest_price": 4.354,
+   "latest_counterfactual": 3.189,
+   "latest_week": "2026-10-05",
+   "premium_now": 1.17,
+   "weekly_extra_now": 17.94,
    "anchor_price": 2.937,
    "gallons_per_year": 801,
    "gallons_source": "CEX $2,645 / $3.30 2024 average price (EIA weekly)",
-   "weeks_counted": 31
+   "weeks_counted": 32
   },
   "diesel": {
-   "per_household": 321,
-   "aggregate_billion": 42.4,
-   "per_household_flat_baseline": 346,
-   "per_household_yoy_baseline": 362,
-   "latest_price": 6.382,
-   "latest_counterfactual": 3.906,
-   "latest_week": "2026-09-28",
-   "premium_now": 2.48,
-   "weekly_extra_now": 16.77,
+   "per_household": 336,
+   "aggregate_billion": 44.4,
+   "per_household_flat_baseline": 362,
+   "per_household_yoy_baseline": 379,
+   "latest_price": 6.199,
+   "latest_counterfactual": 3.905,
+   "latest_week": "2026-10-05",
+   "premium_now": 2.29,
+   "weekly_extra_now": 15.54,
    "anchor_price": 3.809,
    "gallons_per_year": 352,
    "gallons_source": "EIA transportation distillate / households",
-   "weeks_counted": 31
+   "weeks_counted": 32
   },
-  "per_household_flat_baseline": 901,
-  "per_household_yoy_baseline": 806,
-  "latest_week": "2026-09-28",
-  "weeks_counted": 31,
+  "per_household_flat_baseline": 940,
+  "per_household_yoy_baseline": 842,
+  "latest_week": "2026-10-05",
+  "weeks_counted": 32,
   "brown": {
    "date": "2026-09-07",
    "gasoline_per_household": 422,
@@ -197,25 +197,29 @@
    {
     "date": "2026-09-28",
     "cumulative": 721.41
+   },
+   {
+    "date": "2026-10-05",
+    "cumulative": 754.89
    }
   ]
  },
  "tariffs": {
-  "per_household": 2545,
-  "aggregate_billion": 335.9,
+  "per_household": 2553,
+  "aggregate_billion": 336.9,
   "reported_billion": 318.7,
   "reported_through": "2026-08-31",
-  "nowcast_days": 34,
-  "nowcast_billion": 17.2,
+  "nowcast_days": 36,
+  "nowcast_billion": 18.2,
   "daily_rate_per_household": 3.84,
   "annualized_per_household": 1402,
-  "months_elapsed": 20.0,
+  "months_elapsed": 20.1,
   "baseline_monthly_billion": 7.66,
   "refunds_to_importers_billion": 119.5,
   "refunds_to_importers_per_household": 905,
   "yale_annual": 1100.0,
   "yale_vintage": "2026-08-24",
-  "yale_accrued_2026": 835,
+  "yale_accrued_2026": 841,
   "monthly": [
    {
     "month": "2025-01",
@@ -340,16 +344,16 @@
   ]
  },
  "debt": {
-  "per_household": 1656,
-  "aggregate_billion": 218.6,
-  "ratio_only_per_household": 130,
+  "per_household": 1665,
+  "aggregate_billion": 219.7,
+  "ratio_only_per_household": 129,
   "ratio_only_billion": 17.1,
-  "mortgage_ratio_only_per_household": 465,
-  "consumer_ratio_only_per_household": -336,
+  "mortgage_ratio_only_per_household": 466,
+  "consumer_ratio_only_per_household": -337,
   "ratio_only_annual_billion": -2.5,
   "mortgage_ratio_only_annual_billion": 31.4,
-  "mortgage_per_household": 1266,
-  "consumer_per_household": 391,
+  "mortgage_per_household": 1271,
+  "consumer_per_household": 393,
   "annual_increase_billion": 202.6,
   "annual_increase_per_household": 1535,
   "latest_published_quarter": "2026Q2",
@@ -440,7 +444,7 @@
     "annual_billion": 2691.5,
     "increase_annual_billion": 202.6,
     "ratio_only_increase_annual_billion": -2.5,
-    "share_elapsed": 0.04
+    "share_elapsed": 0.07
    }
   ]
  },
@@ -464,7 +468,7 @@
   "alt": {
    "name": "Fannie Mae Housing Forecast (February 2026 vintage)",
    "committed_annual_billion": 3.98,
-   "paid_to_date_billion": 0.78,
+   "paid_to_date_billion": 0.8,
    "per_household_annual": 30,
    "per_household_paid": 6,
    "originations_counted_billion": 1090.7
@@ -1154,27 +1158,33 @@
    "fuel": 721,
    "tariffs": 2522,
    "debt": 131
+  },
+  {
+   "date": "2026-10-05",
+   "fuel": 755,
+   "tariffs": 2549,
+   "debt": 131
   }
  ],
  "sensitivity": {
-  "fuel_flat_prewar_baseline": 901,
-  "fuel_year_ago_baseline": 806,
-  "fuel_gasoline_only": 400,
+  "fuel_flat_prewar_baseline": 940,
+  "fuel_year_ago_baseline": 842,
+  "fuel_gasoline_only": 418,
   "fuel_brown_published": 770,
   "tariffs_reported_months_only": 2414,
-  "tariffs_75pct_passthrough": 1909,
-  "tariffs_yale_rate_2026_only": 835,
-  "debt_nominal_dollar_increase": 1656,
-  "debt_mortgage_ratio_only": 465,
-  "debt_consumer_ratio_only": -336,
-  "debt_consumer_only": 391,
+  "tariffs_75pct_passthrough": 1915,
+  "tariffs_yale_rate_2026_only": 841,
+  "debt_nominal_dollar_increase": 1665,
+  "debt_mortgage_ratio_only": 466,
+  "debt_consumer_ratio_only": -337,
+  "debt_consumer_only": 393,
   "households_135m": {
    "refund_boost": 369,
-   "tariff_cost": 2488
+   "tariff_cost": 2496
   }
  },
  "freshness": {
-  "fuel_latest_week": "2026-09-28",
+  "fuel_latest_week": "2026-10-05",
   "mortgage_latest_week": "2026-10-01",
   "customs_reported_through": "2026-08-31",
   "debt_service_quarter": "2026Q2",
