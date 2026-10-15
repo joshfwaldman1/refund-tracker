@@ -1,23 +1,23 @@
 {
- "built_at": "2026-10-14T18:03:37",
- "as_of": "2026-10-14",
+ "built_at": "2026-10-15T17:48:20",
+ "as_of": "2026-10-15",
  "ledger_start": "2025-01-20",
  "households_millions": 132.0,
  "headline": {
   "refund_boost": 377,
   "fuel_cost": 788,
-  "tariff_cost": 2583,
+  "tariff_cost": 2587,
   "debt_cost": 129,
-  "debt_cost_nominal": 1698,
-  "total_cost": 3500,
-  "net": -3123,
-  "cost_per_refund_dollar": 9.28,
+  "debt_cost_nominal": 1702,
+  "total_cost": 3504,
+  "net": -3127,
+  "cost_per_refund_dollar": 9.29,
   "aggregate": {
    "refund_boost_billion": 49.78,
    "fuel_billion": 104.0,
-   "tariff_billion": 341.0,
+   "tariff_billion": 341.5,
    "debt_billion": 17.0,
-   "debt_nominal_billion": 224.1
+   "debt_nominal_billion": 224.7
   }
  },
  "refunds": {
@@ -209,12 +209,12 @@
   ]
  },
  "tariffs": {
-  "per_household": 2583,
-  "aggregate_billion": 341.0,
+  "per_household": 2587,
+  "aggregate_billion": 341.5,
   "reported_billion": 318.7,
   "reported_through": "2026-08-31",
-  "nowcast_days": 44,
-  "nowcast_billion": 22.3,
+  "nowcast_days": 45,
+  "nowcast_billion": 22.8,
   "daily_rate_per_household": 3.84,
   "annualized_per_household": 1402,
   "months_elapsed": 20.4,
@@ -223,7 +223,7 @@
   "refunds_to_importers_per_household": 905,
   "yale_annual": 1100.0,
   "yale_vintage": "2026-08-24",
-  "yale_accrued_2026": 865,
+  "yale_accrued_2026": 868,
   "monthly": [
    {
     "month": "2025-01",
@@ -348,16 +348,16 @@
   ]
  },
  "debt": {
-  "per_household": 1698,
-  "aggregate_billion": 224.1,
+  "per_household": 1702,
+  "aggregate_billion": 224.7,
   "ratio_only_per_household": 129,
   "ratio_only_billion": 17.0,
   "mortgage_ratio_only_per_household": 472,
   "consumer_ratio_only_per_household": -343,
   "ratio_only_annual_billion": -2.5,
   "mortgage_ratio_only_annual_billion": 31.4,
-  "mortgage_per_household": 1294,
-  "consumer_per_household": 404,
+  "mortgage_per_household": 1297,
+  "consumer_per_household": 405,
   "annual_increase_billion": 202.6,
   "annual_increase_per_household": 1535,
   "latest_published_quarter": "2026Q2",
@@ -448,34 +448,34 @@
     "annual_billion": 2691.5,
     "increase_annual_billion": 202.6,
     "ratio_only_increase_annual_billion": -2.5,
-    "share_elapsed": 0.15
+    "share_elapsed": 0.16
    }
   ]
  },
  "mortgage": {
-  "per_household_annual": 10,
+  "per_household_annual": 12,
   "per_household_paid": 0,
-  "committed_annual_billion": 1.33,
+  "committed_annual_billion": 1.61,
   "paid_to_date_billion": 0.0,
-  "originations_counted_billion": 1125.7,
+  "originations_counted_billion": 1160.7,
   "latest_rate": 7.4,
-  "latest_week": "2026-10-08",
+  "latest_week": "2026-10-15",
   "pre_war_low": 5.98,
   "primary": {
    "name": "MBA Mortgage Finance Forecast (pre-war, Dec 2025 / Feb 2026 vintage)",
-   "committed_annual_billion": 1.33,
+   "committed_annual_billion": 1.61,
    "paid_to_date_billion": 0.0,
-   "per_household_annual": 10,
+   "per_household_annual": 12,
    "per_household_paid": 0,
-   "originations_counted_billion": 1125.7
+   "originations_counted_billion": 1160.7
   },
   "alt": {
    "name": "Fannie Mae Housing Forecast (February 2026 vintage)",
-   "committed_annual_billion": 4.37,
-   "paid_to_date_billion": 0.89,
-   "per_household_annual": 33,
+   "committed_annual_billion": 4.76,
+   "paid_to_date_billion": 0.9,
+   "per_household_annual": 36,
    "per_household_paid": 7,
-   "originations_counted_billion": 1125.7
+   "originations_counted_billion": 1160.7
   },
   "example_loan": 330000,
   "example": {
@@ -1188,20 +1188,20 @@
   "fuel_gasoline_only": 436,
   "fuel_brown_published": 770,
   "tariffs_reported_months_only": 2414,
-  "tariffs_75pct_passthrough": 1937,
-  "tariffs_yale_rate_2026_only": 865,
-  "debt_nominal_dollar_increase": 1698,
+  "tariffs_75pct_passthrough": 1940,
+  "tariffs_yale_rate_2026_only": 868,
+  "debt_nominal_dollar_increase": 1702,
   "debt_mortgage_ratio_only": 472,
   "debt_consumer_ratio_only": -343,
-  "debt_consumer_only": 404,
+  "debt_consumer_only": 405,
   "households_135m": {
    "refund_boost": 369,
-   "tariff_cost": 2526
+   "tariff_cost": 2530
   }
  },
  "freshness": {
   "fuel_latest_week": "2026-10-12",
-  "mortgage_latest_week": "2026-10-08",
+  "mortgage_latest_week": "2026-10-15",
   "customs_reported_through": "2026-08-31",
   "debt_service_quarter": "2026Q2",
   "interest_payments_month": "2026-08",
